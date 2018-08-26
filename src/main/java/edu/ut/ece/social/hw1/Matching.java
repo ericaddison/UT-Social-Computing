@@ -1,3 +1,5 @@
+package edu.ut.ece.social.hw1;
+
 import java.util.*;
 
 /**
