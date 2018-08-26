@@ -1,6 +1,5 @@
-package edu.ut.ece.social;
+package edu.ut.ece.social.hw1;
 
-import edu.ut.ece.social.hw1.BipartiteGraph;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
