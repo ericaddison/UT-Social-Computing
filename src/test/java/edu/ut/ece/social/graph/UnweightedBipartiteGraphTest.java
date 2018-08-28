@@ -1,7 +1,6 @@
 package edu.ut.ece.social.graph;
 
 import com.google.common.collect.ImmutableList;
-import edu.ut.ece.social.graph.UnweightedBipartiteGraph;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

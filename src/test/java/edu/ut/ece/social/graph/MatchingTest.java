@@ -1,8 +1,5 @@
 package edu.ut.ece.social.graph;
 
-import edu.ut.ece.social.graph.BipartiteGraph;
-import edu.ut.ece.social.graph.BipartiteGraphFactory;
-import edu.ut.ece.social.graph.Matching;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
