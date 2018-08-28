@@ -13,7 +13,7 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * A weighted, undirected bipartite graph.
+ * An unweighted, undirected bipartite graph.
  */
 public class UnweightedBipartiteGraph<N> implements Graph<N> {
 
