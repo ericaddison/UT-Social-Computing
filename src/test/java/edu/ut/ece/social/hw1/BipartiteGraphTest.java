@@ -72,5 +72,14 @@ public class BipartiteGraphTest {
         assertThat(removeEdgeResult).isFalse();
     }
 
+    @Test
+    public void test() {
+        BipartiteGraph<Integer, Integer> g = emptyBipartiteGraph();
+
+        g.putEdge(1, 2, 10);
+
+        assertThat(g.hasEdgeConnecting(1, 2)).isTrue();
+    }
+
 
 }

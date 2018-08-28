@@ -15,78 +15,31 @@ import static com.google.common.base.Preconditions.checkArgument;
 /**
  * An unweighted, undirected bipartite graph.
  */
-public class UnweightedBipartiteGraph<N> implements Graph<N> {
+public class UnweightedBipartiteGraph<N> extends AbstractBipartiteGraph<N> implements Graph<N> {
 
     private final MutableGraph<N> underlyingGraph = GraphBuilder.undirected().build();
-    private final Set<N> leftSideNodes;
-    private final Set<N> rightSideNodes;
 
     protected UnweightedBipartiteGraph() {
         this(new HashSet<>(), new HashSet<>());
     }
 
     protected UnweightedBipartiteGraph(Set<N> leftSideNodes, Set<N> rightSideNodes) {
-        this.leftSideNodes = leftSideNodes;
-        this.rightSideNodes = rightSideNodes;
-        leftSideNodes.forEach(this::addLeftSideNode);
-        rightSideNodes.forEach(this::addRightSideNode);
+        super(leftSideNodes, rightSideNodes);
     }
 
-    public boolean addLeftSideNode(N node) {
-        return addNode(node, leftSideNodes);
+    @Override
+    protected boolean addNodeToUnderlyingGraph(N node) {
+        return underlyingGraph.addNode(node);
     }
 
-    public boolean addRightSideNode(N node) {
-        return addNode(node, rightSideNodes);
-    }
-
-    @SafeVarargs
-    public final ImmutableList<Boolean> addLeftSideNodes(N... nodes) {
-        return Arrays.stream(nodes).map(this::addLeftSideNode).collect(ImmutableList.toImmutableList());
-    }
-
-    @SafeVarargs
-    public final ImmutableList<Boolean> addRightSideNodes(N... nodes) {
-        return Arrays.stream(nodes).map(this::addRightSideNode).collect(ImmutableList.toImmutableList());
-    }
-
-    private boolean addNode(N node, Set<N> nodeSet) {
-        if(leftSideNodes.contains(node) || rightSideNodes.contains(node)) {
-            return false;
-        }
-
-        nodeSet.add(node);
-        underlyingGraph.addNode(node);
-        return true;
-    }
-
-    public boolean removeNode(N node) {
-        leftSideNodes.remove(node);
-        rightSideNodes.remove(node);
+    @Override
+    public boolean removeNodeFromUnderlyingGraph(N node) {
         return underlyingGraph.removeNode(node);
-    }
-
-    public ImmutableSet<N> leftSideNodes() {
-        return ImmutableSet.copyOf(leftSideNodes);
-    }
-
-    public ImmutableSet<N> rightSideNodes() {
-        return ImmutableSet.copyOf(rightSideNodes);
     }
 
     public void putEdge(N leftSideNode, N rightSideNode) {
         addEdgeSetup(leftSideNode, rightSideNode);
         underlyingGraph.putEdge(leftSideNode, rightSideNode);
-    }
-
-    protected void addEdgeSetup(N leftSideNode, N rightSideNode) {
-        checkArgument(!rightSideNodes.contains(leftSideNode),
-                "Provided left side node is already a right side node");
-        checkArgument(!leftSideNodes.contains(rightSideNode),
-                "Provided right side node is already a left side node");
-
-        leftSideNodes.add(leftSideNode);
-        rightSideNodes.add(rightSideNode);
     }
 
     public boolean removeEdge(N nodeU, N nodeV) {
