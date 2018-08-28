@@ -1,4 +1,4 @@
-package edu.ut.ece.social.hw1;
+package edu.ut.ece.social.graph;
 
 /**
  * Factory methods for generating BipartiteGraphs.

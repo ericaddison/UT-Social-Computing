@@ -1,12 +1,15 @@
-package edu.ut.ece.social.hw1;
+package edu.ut.ece.social.graph;
 
+import edu.ut.ece.social.graph.BipartiteGraph;
+import edu.ut.ece.social.graph.BipartiteGraphFactory;
+import edu.ut.ece.social.graph.Matching;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
-import static edu.ut.ece.social.hw1.BipartiteGraphFactory.emptyMatching;
+import static edu.ut.ece.social.graph.BipartiteGraphFactory.emptyMatching;
 
 @RunWith(JUnit4.class)
 public class MatchingTest {

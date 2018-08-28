@@ -1,5 +1,6 @@
-package edu.ut.ece.social.hw1;
+package edu.ut.ece.social.graph;
 
+import edu.ut.ece.social.graph.BipartiteGraph;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -7,7 +8,7 @@ import org.junit.runners.JUnit4;
 import java.util.Optional;
 
 import static com.google.common.truth.Truth.assertThat;
-import static edu.ut.ece.social.hw1.BipartiteGraphFactory.emptyBipartiteGraph;
+import static edu.ut.ece.social.graph.BipartiteGraphFactory.emptyBipartiteGraph;
 
 @RunWith(JUnit4.class)
 public class BipartiteGraphTest {

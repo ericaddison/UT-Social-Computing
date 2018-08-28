@@ -1,29 +1,24 @@
-package edu.ut.ece.social.hw1;
+package edu.ut.ece.social.graph;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.graph.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkArgument;
+import java.util.*;
 
 /**
- * An unweighted, undirected bipartite graph.
+ * A weighted, undirected bipartite graph.
  */
-public class UnweightedBipartiteGraph<N> extends AbstractBipartiteGraph<N> implements Graph<N> {
+public final class BipartiteGraph<N, V> extends AbstractBipartiteGraph<N> implements ValueGraph<N, V> {
 
-    private final MutableGraph<N> underlyingGraph = GraphBuilder.undirected().build();
+    private final MutableValueGraph<N, V> underlyingGraph = ValueGraphBuilder.undirected().build();
 
-    protected UnweightedBipartiteGraph() {
+    protected BipartiteGraph() {
         this(new HashSet<>(), new HashSet<>());
     }
 
-    protected UnweightedBipartiteGraph(Set<N> leftSideNodes, Set<N> rightSideNodes) {
+    private BipartiteGraph(Set<N> leftSideNodes, Set<N> rightSideNodes) {
         super(leftSideNodes, rightSideNodes);
     }
 
@@ -33,17 +28,35 @@ public class UnweightedBipartiteGraph<N> extends AbstractBipartiteGraph<N> imple
     }
 
     @Override
-    public boolean removeNodeFromUnderlyingGraph(N node) {
+    protected boolean removeNodeFromUnderlyingGraph(N node) {
         return underlyingGraph.removeNode(node);
     }
 
-    public void putEdge(N leftSideNode, N rightSideNode) {
+    public Optional<V> putEdge(N leftSideNode, N rightSideNode, V value) {
         addEdgeSetup(leftSideNode, rightSideNode);
-        underlyingGraph.putEdge(leftSideNode, rightSideNode);
+        V previousValue = underlyingGraph.putEdgeValue(leftSideNode, rightSideNode, value);
+        return Optional.ofNullable(previousValue);
     }
 
     public boolean removeEdge(N nodeU, N nodeV) {
-        return underlyingGraph.removeEdge(nodeU, nodeV);
+        return underlyingGraph.removeEdge(nodeU, nodeV) != null;
+    }
+
+    @Override
+    public Graph<N> asGraph() {
+        return underlyingGraph.asGraph();
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public Optional<V> edgeValue(N nodeU, N nodeV) {
+        return underlyingGraph.edgeValue(nodeU, nodeV);
+    }
+
+    @Override
+    @ParametersAreNonnullByDefault
+    public V edgeValueOrDefault(N nodeU, N nodeV, @Nullable V defaultValue) {
+        return underlyingGraph.edgeValueOrDefault(nodeU, nodeV, defaultValue);
     }
 
     @Override

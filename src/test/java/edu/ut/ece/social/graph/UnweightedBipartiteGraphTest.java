@@ -1,12 +1,13 @@
-package edu.ut.ece.social.hw1;
+package edu.ut.ece.social.graph;
 
 import com.google.common.collect.ImmutableList;
+import edu.ut.ece.social.graph.UnweightedBipartiteGraph;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static com.google.common.truth.Truth.assertThat;
-import static edu.ut.ece.social.hw1.BipartiteGraphFactory.emptyUnweightedGraph;
+import static edu.ut.ece.social.graph.BipartiteGraphFactory.emptyUnweightedGraph;
 
 @RunWith(JUnit4.class)
 public class UnweightedBipartiteGraphTest {
