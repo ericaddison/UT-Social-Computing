@@ -27,8 +27,9 @@ public final class BipartiteGraph<N, V> extends UnweightedBipartiteGraph<N> impl
         return Optional.ofNullable(previousValue);
     }
 
-    public Optional<V> removeEdge(N nodeU, N nodeV) {
-        return Optional.ofNullable(underlyingGraph.removeEdge(nodeU, nodeV));
+    @Override
+    public boolean removeEdge(N nodeU, N nodeV) {
+        return underlyingGraph.removeEdge(nodeU, nodeV) != null;
     }
 
     @Override

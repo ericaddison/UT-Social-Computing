@@ -1,6 +1,5 @@
 package edu.ut.ece.social.hw1;
 
-import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -42,10 +41,7 @@ public class BipartiteGraphTest {
         g.addLeftSideNode(1);
         g.addLeftSideNode(2);
 
-        Optional<Integer> putEdgeResult = g.putEdge(1, 2, 10);
-
-        assertThat(putEdgeResult.isPresent()).isFalse();
-        assertThat(g.hasEdgeConnecting(1, 2)).isFalse();
+        g.putEdge(1, 2, 10);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -62,19 +58,18 @@ public class BipartiteGraphTest {
         BipartiteGraph<Integer, Integer> g = emptyBipartiteGraph();
         g.putEdge(1, 2, 10);
 
-        Optional<Integer> removeEdgeResult = g.removeEdge(1, 2);
+        boolean removeEdgeResult = g.removeEdge(1, 2);
 
-        assertThat(removeEdgeResult.isPresent()).isTrue();
-        assertThat(removeEdgeResult.get()).isEqualTo(10);
+        assertThat(removeEdgeResult).isTrue();
     }
 
     @Test
     public void removeANonexistingEdge_shouldNotSucceed() {
         BipartiteGraph<Integer, Integer> g = emptyBipartiteGraph();
 
-        Optional<Integer> removeEdgeResult = g.removeEdge(1, 2);
+        boolean removeEdgeResult = g.removeEdge(1, 2);
 
-        assertThat(removeEdgeResult.isPresent()).isFalse();
+        assertThat(removeEdgeResult).isFalse();
     }
 
 

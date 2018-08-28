@@ -89,6 +89,10 @@ public class UnweightedBipartiteGraph<N> implements Graph<N> {
         rightSideNodes.add(rightSideNode);
     }
 
+    public boolean removeEdge(N nodeU, N nodeV) {
+        return underlyingGraph.removeEdge(nodeU, nodeV);
+    }
+
     @Override
     public Set<N> nodes() {
         return ImmutableSet.copyOf(underlyingGraph.nodes());
