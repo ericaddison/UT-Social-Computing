@@ -24,6 +24,7 @@ public class InputReader {
 
         // get the values as a list of lists of integers
         List<List<Integer>> values = reader.lines()
+                .map(s -> s.replaceAll("//.*",""))
                 .map(String::trim)
                 .map(Splitter.on(Pattern.compile("\\s+"))::splitToList)
                 .filter(splitArray -> splitArray.size() > 1)
