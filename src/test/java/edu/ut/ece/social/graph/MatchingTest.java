@@ -59,7 +59,7 @@ public class MatchingTest {
 
         matching.forcePutEdge(1, 3);
 
-        assertThat(matching.rightSideNodes()).contains(2);
+        assertThat(matching.rightSideNodes()).doesNotContain(2);
         assertThat(matching.rightSideNodes()).contains(3);
         assertThat(matching.hasEdgeConnecting(1, 3)).isTrue();
         assertThat(matching.hasEdgeConnecting(1, 2)).isFalse();

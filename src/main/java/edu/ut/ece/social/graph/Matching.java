@@ -1,12 +1,21 @@
 package edu.ut.ece.social.graph;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkArgument;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import java.util.Set;
 
 /**
- * Represents a matching of a given Bipartite graph, which is itself a Bipartite graph where every node has degree
- * of at most one.
+ * Represents a matching of a given Bipartite graph, which is represented as a collection of edges
+ * between "left" and "right" side nodes.
  */
-public class Matching<N> extends UnweightedBipartiteGraph<N> {
+public class Matching<N> {
+
+    /**
+     * the BiMap that represents the edges of the Matching, where the keys represent the left-hand
+     * nodes and the values represent the right-hand nodes.
+     */
+    private final BiMap<N, N> backingMap = HashBiMap.create();
 
     /**
      * Check if this matching is a perfect matching for the given graph. Ensure this matching is a matching for the
@@ -31,29 +40,48 @@ public class Matching<N> extends UnweightedBipartiteGraph<N> {
     }
 
     /**
-     * Attempt to insert a new edge in the matching.
+     * Attempt to insert a new edge in the matching, ensuring that neither node is already contained
+     * in the other side.
      * If either supplied node already has a connection, operation fails.
      */
-    @Override
     public void putEdge(N leftSideNode, N rightSideNode) {
-        Preconditions.checkArgument(
-                !checkDegreeViolation(leftSideNode, rightSideNode),
-                "A given node already has a match.");
+        checkArgument(!leftSideNodes().contains(rightSideNode),
+            "The given rightSideNode already exists as a leftSideNode");
+        checkArgument(!rightSideNodes().contains(leftSideNode),
+            "The given leftSideNode already exists as a rightSideNode");
+        checkArgument(!leftSideNodes().contains(leftSideNode),
+            "The given leftSideNode already has a connection. Consider using forcePutEdge() instead");
+        checkArgument(!rightSideNodes().contains(rightSideNode),
+            "The given rightSideNode already has a connection. Consider using forcePutEdge() instead");
 
-        super.putEdge(leftSideNode, rightSideNode);
-    }
-
-    private boolean checkDegreeViolation(N leftSideNode, N rightSideNode) {
-        return (leftSideNodes().contains(leftSideNode) && degree(leftSideNode) > 0) ||
-                (rightSideNodes().contains(rightSideNode) && degree(rightSideNode) > 0);
+        backingMap.put(leftSideNode, rightSideNode);
     }
 
     /**
      * Insert the new edge value, removing existing edges on the given nodes if any exist.
      */
     public void forcePutEdge(N leftSideNode, N rightSideNode) {
-        removeNode(leftSideNode);
-        removeNode(rightSideNode);
-        super.putEdge(leftSideNode, rightSideNode);
+        backingMap.forcePut(leftSideNode, rightSideNode);
+    }
+
+    /**
+     * Checks whether this Matching contains an edge between the given left and right side nodes.
+     */
+    public boolean hasEdgeConnecting(N leftSideNode, N rightSideNode) {
+      return backingMap.containsKey(leftSideNode) && backingMap.get(leftSideNode).equals(rightSideNode);
+    }
+
+    /**
+     * Returns the "left-side" nodes from this matching.
+     */
+    public Set<N> leftSideNodes() {
+      return backingMap.keySet();
+    }
+
+    /**
+     * Returns the "right-side" nodes from this matching.
+     */
+    public Set<N> rightSideNodes() {
+      return backingMap.values();
     }
 }
