@@ -1,7 +1,6 @@
 package edu.ut.ece.social.hw1;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.truth.Truth;
 import edu.ut.ece.social.graph.BipartiteGraph;
 import edu.ut.ece.social.graph.BipartiteGraphFactory;
 import edu.ut.ece.social.graph.Matching;
