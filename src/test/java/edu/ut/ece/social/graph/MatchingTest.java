@@ -53,7 +53,7 @@ public class MatchingTest {
     }
 
     @Test
-    public void forcePuttingSecondEdgeOnOneNode_shouldSuceed() {
+    public void forcePuttingSecondEdgeOnOneNode_shouldSucceed() {
         Matching<Integer> matching = emptyMatching();
         matching.putEdge(1, 2);
 
