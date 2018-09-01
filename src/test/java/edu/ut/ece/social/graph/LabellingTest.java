@@ -75,4 +75,19 @@ public class LabellingTest {
         assertThat(isFeasible).isTrue();
     }
 
+    @Test
+    public void getEqualityGraph_shouldContainOnlyTightEdges() {
+        Labelling<Integer, Integer> labelling = Labelling.createFeasibleLabellingOn(sampleGraph);
+
+        BipartiteGraph<Integer, Integer> equalityGraph = labelling.getEqualityGraphOn(sampleGraph);
+
+        assertThat(equalityGraph.leftSideNodes()).containsExactly(1, 3);
+        assertThat(equalityGraph.rightSideNodes()).containsExactly(4);
+        assertThat(equalityGraph.hasEdgeConnecting(1, 4)).isTrue();
+        assertThat(equalityGraph.hasEdgeConnecting(3, 4)).isTrue();
+        assertThat(equalityGraph.hasEdgeConnecting(1, 2)).isFalse();
+        assertThat(equalityGraph.hasEdgeConnecting(3, 2)).isFalse();
+
+    }
+
 }
