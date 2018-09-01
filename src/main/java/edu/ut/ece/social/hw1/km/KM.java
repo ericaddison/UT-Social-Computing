@@ -5,6 +5,7 @@ import edu.ut.ece.social.graph.BipartiteGraph;
 import edu.ut.ece.social.graph.Matching;
 import edu.ut.ece.social.hw1.HwRunner;
 
+import java.io.FileNotFoundException;
 import java.time.Instant;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -15,7 +16,7 @@ public class KM {
         return null;
     }
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws FileNotFoundException {
 
         checkArgument(args.length==1, "Required filename as sole command line argument");
 
