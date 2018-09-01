@@ -3,6 +3,11 @@ package edu.ut.ece.social.graph;
 import static com.google.common.base.Preconditions.checkArgument;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableSet;
+
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -69,6 +74,20 @@ public class Matching<N> {
      */
     public boolean hasEdgeConnecting(N leftSideNode, N rightSideNode) {
       return backingMap.containsKey(leftSideNode) && backingMap.get(leftSideNode).equals(rightSideNode);
+    }
+
+    /**
+     * Returns the match for the given node, if present.
+     */
+    public Optional<N> getMatch(N leftSideNode) {
+        return Optional.ofNullable(backingMap.get(leftSideNode));
+    }
+
+    /**
+     * Returns a set of the matches in this Matching.
+     */
+    public ImmutableSet<Entry<N, N>> getAllMatches() {
+        return ImmutableSet.copyOf(backingMap.entrySet());
     }
 
     /**
