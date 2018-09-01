@@ -2,11 +2,34 @@ package edu.ut.ece.social.graph;
 
 import com.google.common.graph.EndpointPair;
 
+import java.awt.*;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class Labelling<N, V extends Number> {
+
+    public static <N, V extends Number> Labelling<N, V> createFeasibleLabellingOn(
+            BipartiteGraph<N, V> graph) {
+        Labelling<N, V> labelling = new Labelling<>();
+
+        for(N nodeU : graph.nodes()) {
+            V maxWeight = graph.adjacentNodes(nodeU).stream()
+                    .max((v1, v2) -> compareNodes(nodeU, v1, v2, graph))
+                    .flatMap(maxV -> graph.edgeValue(nodeU, maxV))
+                    .orElseThrow(() -> new IllegalStateException("Should never get here"));
+
+            labelling.putLabel(nodeU, maxWeight);
+        }
+        return labelling;
+    }
+
+    private static <N, Z extends Number> int compareNodes(N nodeU, N nodeV1, N nodeV2, BipartiteGraph<N, Z> graph) {
+        double edgeValue1 = graph.edgeValue(nodeU, nodeV1).get().doubleValue();
+        double edgeValue2 = graph.edgeValue(nodeU, nodeV2).get().doubleValue();
+        return Comparator.<Double>naturalOrder().compare(edgeValue1, edgeValue2);
+    }
 
     Map<N, V> nodeLabelMap = new HashMap<>();
 

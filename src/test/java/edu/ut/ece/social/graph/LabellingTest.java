@@ -1,6 +1,5 @@
 package edu.ut.ece.social.graph;
 
-import com.google.common.truth.Truth;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,5 +66,13 @@ public class LabellingTest {
         assertThat(isTight).isTrue();
     }
 
+    @Test
+    public void createFeasibleLabellingOn_shouldCreateAFeasibleLabelling() {
+        Labelling<Integer, Integer> labelling = Labelling.createFeasibleLabellingOn(sampleGraph);
+
+        boolean isFeasible = labelling.isFeasibleOn(sampleGraph);
+
+        assertThat(isFeasible).isTrue();
+    }
 
 }
