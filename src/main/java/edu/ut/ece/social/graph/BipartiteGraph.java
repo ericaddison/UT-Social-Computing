@@ -1,5 +1,6 @@
 package edu.ut.ece.social.graph;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.graph.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
