@@ -5,5 +5,5 @@ import edu.ut.ece.social.graph.Matching;
 
 @FunctionalInterface
 public interface MaximumMatchingAlgorithm {
-    <N, V> Matching<N> findMaximumMatching(BipartiteGraph<N, V> graph);
+    Matching<Integer> findMaximumMatching(BipartiteGraph<Integer, Integer> graph);
 }
