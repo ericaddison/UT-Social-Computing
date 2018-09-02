@@ -1,5 +1,6 @@
 package edu.ut.ece.social.graph;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.graph.*;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -66,7 +67,18 @@ public final class BipartiteGraph<N, V> extends AbstractBipartiteGraph<N> implem
 
     @Override
     public Set<EndpointPair<N>> edges() {
-        return ImmutableSet.copyOf(underlyingGraph.edges());
+        return underlyingGraph.edges().stream().map(this::orderEdge).collect(ImmutableSet.toImmutableSet());
+    }
+
+    private EndpointPair<N> orderEdge(EndpointPair<N> edge) {
+        N nodeU = edge.nodeU();
+        N nodeV = edge.nodeV();
+
+        N leftSideNode = leftSideNodes().contains(nodeU) ? nodeU : nodeV;
+        N rightSideNode = rightSideNodes().contains(nodeU) ? nodeU : nodeV;
+
+        return EndpointPair.ordered(leftSideNode, rightSideNode);
+
     }
 
     @Override

@@ -1,7 +1,6 @@
 package edu.ut.ece.social.hw1;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.truth.Truth;
 import edu.ut.ece.social.graph.BipartiteGraph;
 import edu.ut.ece.social.graph.BipartiteGraphFactory;
 import edu.ut.ece.social.graph.Matching;
@@ -56,18 +55,15 @@ public class HwRunnerTest {
         }
     }
 
-    private static MaximumMatchingAlgorithm testMaxMatch = new MaximumMatchingAlgorithm() {
-        @Override
-        public <N, V> Matching<N> findMaximumMatching(BipartiteGraph<N, V> graph) {
-            Matching<N> matching = BipartiteGraphFactory.emptyMatching();
-            ImmutableList<N> leftSideNodes = graph.leftSideNodes().asList();
-            ImmutableList<N> rightSideNodes = graph.rightSideNodes().asList();
+    private static MaximumMatchingAlgorithm testMaxMatch = graph -> {
+        Matching<Integer> matching = BipartiteGraphFactory.emptyMatching();
+        ImmutableList<Integer> leftSideNodes = graph.leftSideNodes().asList();
+        ImmutableList<Integer> rightSideNodes = graph.rightSideNodes().asList();
 
-            for(int i=0; i<leftSideNodes.size(); i++) {
-                matching.putEdge(leftSideNodes.get(i), rightSideNodes.get(i));
-            }
-            return matching;
+        for(int i=0; i<leftSideNodes.size(); i++) {
+            matching.putEdge(leftSideNodes.get(i), rightSideNodes.get(i));
         }
+        return matching;
     };
 
 }

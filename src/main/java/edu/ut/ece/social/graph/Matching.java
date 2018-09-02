@@ -1,8 +1,10 @@
 package edu.ut.ece.social.graph;
 
 import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.util.Map;
@@ -26,7 +28,7 @@ public class Matching<N> {
      * Check if this matching is a perfect matching for the given graph. Ensure this matching is a matching for the
      * given graph, and that it contains all of the left and right side nodes (e.g. all nodes have matches)
      */
-    public <V> boolean isPerfectMatchingOn(BipartiteGraph<N, V> graph) {
+    public boolean isPerfectMatchingOn(BipartiteGraph<N, ?> graph) {
         return isMatchingOn(graph)
                 && leftSideNodes().size() == graph.leftSideNodes().size()
                 && rightSideNodes().size() == graph.rightSideNodes().size();
@@ -36,12 +38,30 @@ public class Matching<N> {
      * Check whether this matching is valid for the given graph. since this is a valid matching, just need to
      * check if all of the matching nodes are nodes in the given graph.
      */
-    public <V> boolean isMatchingOn(BipartiteGraph<N, V> graph) {
+    public boolean isMatchingOn(BipartiteGraph<N, ?> graph) {
         boolean validLeftSideNodes = graph.leftSideNodes().containsAll(this.leftSideNodes());
 
         boolean validRightSideNodes = graph.rightSideNodes().containsAll(this.rightSideNodes());
 
         return validLeftSideNodes && validRightSideNodes;
+    }
+
+    /**
+     * Finds an augmenting path for this Matching on the given graph. If no augmenting path is found, returns empty
+     * {@link Optional}.
+     *
+     * @return an ordered list of nodes representing the augmenting path.
+     */
+    public Optional<ImmutableList<N>> findAugmentingPathOn(BipartiteGraph<N, ?> graph) {
+        //TODO: implement findAugmentingPath
+        return Optional.empty();
+    }
+
+    /**
+     * Updates this matching such that the provided augmenting path is flipped.
+     */
+    public void flipAugmentingPath(ImmutableList<N> augmentingPath) {
+        //TODO: implement flipAugmentingPath
     }
 
     /**
@@ -51,13 +71,13 @@ public class Matching<N> {
      */
     public void putEdge(N leftSideNode, N rightSideNode) {
         checkArgument(!leftSideNodes().contains(rightSideNode),
-            "The given rightSideNode already exists as a leftSideNode");
+                "The given rightSideNode already exists as a leftSideNode");
         checkArgument(!rightSideNodes().contains(leftSideNode),
-            "The given leftSideNode already exists as a rightSideNode");
+                "The given leftSideNode already exists as a rightSideNode");
         checkArgument(!leftSideNodes().contains(leftSideNode),
-            "The given leftSideNode already has a connection. Consider using forcePutEdge() instead");
+                "The given leftSideNode already has a connection. Consider using forcePutEdge() instead");
         checkArgument(!rightSideNodes().contains(rightSideNode),
-            "The given rightSideNode already has a connection. Consider using forcePutEdge() instead");
+                "The given rightSideNode already has a connection. Consider using forcePutEdge() instead");
 
         backingMap.put(leftSideNode, rightSideNode);
     }
@@ -73,7 +93,7 @@ public class Matching<N> {
      * Checks whether this Matching contains an edge between the given left and right side nodes.
      */
     public boolean hasEdgeConnecting(N leftSideNode, N rightSideNode) {
-      return backingMap.containsKey(leftSideNode) && backingMap.get(leftSideNode).equals(rightSideNode);
+        return backingMap.containsKey(leftSideNode) && backingMap.get(leftSideNode).equals(rightSideNode);
     }
 
     /**
@@ -94,13 +114,13 @@ public class Matching<N> {
      * Returns the "left-side" nodes from this matching.
      */
     public Set<N> leftSideNodes() {
-      return backingMap.keySet();
+        return backingMap.keySet();
     }
 
     /**
      * Returns the "right-side" nodes from this matching.
      */
     public Set<N> rightSideNodes() {
-      return backingMap.values();
+        return backingMap.values();
     }
 }
