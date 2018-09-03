@@ -3,9 +3,13 @@ package edu.ut.ece.social.hw1.dgs;
 import com.google.common.base.Preconditions;
 import edu.ut.ece.social.graph.BipartiteGraph;
 import edu.ut.ece.social.graph.Matching;
+import edu.ut.ece.social.hw1.HwRunner;
+import edu.ut.ece.social.hw1.km.KM;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static edu.ut.ece.social.graph.BipartiteGraphFactory.emptyMatching;
 
 /**
@@ -26,17 +30,13 @@ import static edu.ut.ece.social.graph.BipartiteGraphFactory.emptyMatching;
  *    price_rsn += delta
  * return value of all edges AND list of matches
  */
-public class DGS<N> {
+public class DGS {
 
-    private Queue<N> bidderQueue = new PriorityQueue();
-    private Hashtable<N, Integer> price = new Hashtable();
-    private Hashtable<N, N>  owner = new Hashtable();
-
-    private N findGreatestPayoff(N lsn, BipartiteGraph<N,Integer> graph) {
-        Set<N> rsnSet = graph.successors(lsn);
+    private static Integer findGreatestPayoff(Integer lsn, Map<Integer, Integer> price, BipartiteGraph<Integer,Integer> graph) {
+        Set<Integer> rsnSet = graph.successors(lsn);
         int maxValue = 0;
-        N maxRsn = rsnSet.iterator().next();
-        for (N rsn: rsnSet) {
+        Integer maxRsn = rsnSet.iterator().next();
+        for (Integer rsn: rsnSet) {
             if ((graph.edgeValue(lsn,rsn).get() - price.get(rsn)) > maxValue) {
                 maxValue = graph.edgeValue(lsn,rsn).get() - price.get(rsn);
                 maxRsn = rsn;
@@ -46,20 +46,28 @@ public class DGS<N> {
         return maxRsn;
     }
 
-    public BipartiteGraph DGSAlgorithm (BipartiteGraph<N, Integer> graph) {
+    public static Matching<Integer> maxMatchingDGS (BipartiteGraph<Integer, Integer> graph) {
         Preconditions.checkArgument(graph.leftSideNodes().size() == graph.rightSideNodes().size(),
                 "Right side nodes size does not equal left size node size");
 
-        for (N rsn: graph.rightSideNodes()) {
+        Queue<Integer> bidderQueue = new PriorityQueue();
+        Map<Integer, Integer> price = new HashMap<>();
+        Map<Integer, Integer>  owner = new HashMap<>();
+
+        for (Integer rsn: graph.rightSideNodes()) {
             price.put(rsn, 0);
             owner.put(rsn, null);
         }
         bidderQueue.addAll(graph.leftSideNodes());
-        double delta = 1/ (graph.nodes().size() + 1);
+        double delta = (double)  1 / (graph.nodes().size() + 1);
+
+        if (delta == 0) {
+            throw new IllegalStateException("Delta cannot be 0");
+        }
 
         while (!bidderQueue.isEmpty()) {
-            N lsn = bidderQueue.remove();
-            N rsn = findGreatestPayoff(lsn, graph);
+            Integer lsn = bidderQueue.remove();
+            Integer rsn = findGreatestPayoff(lsn, price, graph);
             int effectivePayoff = graph.edgeValue(lsn, rsn).get() - price.get(rsn);
             if (effectivePayoff >= 0) {
                 if (owner.get(rsn) != null) {
@@ -70,10 +78,18 @@ public class DGS<N> {
             }
         }
 
-        Matching<Integer> matching = emptyMatching();
-        //for (N o: owner.)
-        matching.putEdge(1, 2);
+        Matching<Integer> m = emptyMatching();
+        for (int o: owner.keySet()) {
+            m.putEdge(owner.get(o), o);
+        }
+        return m;
+    }
 
-        // TODO: Add time measurements
+    public static void main(String args[]) throws FileNotFoundException {
+
+        checkArgument(args.length==1, "Required filename as sole command line argument");
+
+        String inputFileName = args[0];
+        HwRunner.runMaximumMatchingProblem(inputFileName, DGS::maxMatchingDGS);
     }
 }

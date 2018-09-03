@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import edu.ut.ece.social.graph.BipartiteGraph;
 import edu.ut.ece.social.graph.BipartiteGraphFactory;
 import edu.ut.ece.social.graph.Matching;
+import edu.ut.ece.social.hw1.dgs.DGS;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,9 @@ public class HwRunnerTest {
         System.setOut(myPrintStream);
 
         HwRunner.runMaximumMatchingProblem("./src/test/resources/testInput.dat", testMaxMatch);
+
+        HwRunner.runMaximumMatchingProblem("./src/test/resources/testInput.dat", DGS::maxMatchingDGS);
+
 
         assertThat(myPrintStream.lines.get(0)).matches("Elapsed time:.*ms");
         assertThat(myPrintStream.lines).contains("3");
