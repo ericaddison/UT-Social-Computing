@@ -50,6 +50,7 @@ public class HwRunnerTest {
         assertThat(testOutputArray[2]).contains("(1,-1)");
         assertThat(testOutputArray[3]).contains("(2,-2)");
         assertThat(testOutputArray[4]).contains("(3,-3)");
+        assertThat(testOutputArray).hasLength(5);
     }
 
     private static class CachingPrintStream extends PrintStream {
