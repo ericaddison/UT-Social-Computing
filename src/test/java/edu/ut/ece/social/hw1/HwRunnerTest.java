@@ -10,9 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,14 +33,23 @@ public class HwRunnerTest {
 
         HwRunner.runMaximumMatchingProblem("./src/test/resources/testInput.dat", testMaxMatch);
 
-        HwRunner.runMaximumMatchingProblem("./src/test/resources/testInput.dat", DGS::maxMatchingDGS);
-
-
         assertThat(myPrintStream.lines.get(0)).matches("Elapsed time:.*ms");
         assertThat(myPrintStream.lines).contains("3");
         assertThat(myPrintStream.lines).contains("(1,-1)");
         assertThat(myPrintStream.lines).contains("(2,-2)");
         assertThat(myPrintStream.lines).contains("(3,-3)");
+    }
+
+    @Test
+    public void justRunItDGS_shouldNotThrowAnyExceptions() throws FileNotFoundException {
+        String testOutput = HwRunner.runMaximumMatchingProblemWithOutput("./src/test/resources/testInput.dat", DGS::maxMatchingDGS);
+
+        String[] testOutputArray = testOutput.split("\n");
+        assertThat(testOutputArray[0]).matches("Elapsed time:.*ms");
+        assertThat(testOutputArray[1]).contains("3");
+        assertThat(testOutputArray[2]).contains("(1,-1)");
+        assertThat(testOutputArray[3]).contains("(2,-2)");
+        assertThat(testOutputArray[4]).contains("(3,-3)");
     }
 
     private static class CachingPrintStream extends PrintStream {

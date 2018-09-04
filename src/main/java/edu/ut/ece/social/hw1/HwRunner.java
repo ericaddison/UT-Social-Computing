@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 public class HwRunner {
 
@@ -28,6 +29,27 @@ public class HwRunner {
                 .map(match -> String.format("(%d,%d)", match.getKey(), match.getValue()))
                 .forEach(System.out::println);
 
+    }
+
+    public static String runMaximumMatchingProblemWithOutput(String filename, MaximumMatchingAlgorithm matchingAlgorithm)
+            throws FileNotFoundException {
+        BipartiteGraph<Integer, Integer> graph = InputReader.readGraphFromFile(Paths.get(filename));
+
+        Instant startInstant = Instant.now();
+        Matching<Integer> maxMatching = matchingAlgorithm.findMaximumMatching(graph);
+        Instant endInstant = Instant.now();
+
+        Duration elapsedTime = Duration.between(startInstant, endInstant);
+
+        String output = "";
+        output += "Elapsed time: " + elapsedTime.toMillis() + "ms\n";
+        output += Integer.toString(computeMatchingWeight(graph, maxMatching)) + "\n";
+
+        output += maxMatching.getAllMatches().stream()
+                .map(match -> String.format("(%d,%d)", match.getKey(), match.getValue()))
+                .collect(Collectors.joining("\n"));
+
+        return output;
     }
 
     private static int computeMatchingWeight(BipartiteGraph<Integer, Integer> graph, Matching<Integer> matching) {
