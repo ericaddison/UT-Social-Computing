@@ -10,6 +10,7 @@ import edu.ut.ece.social.hw1.HwRunner;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -48,7 +49,7 @@ public class KM {
                 .findAny();
 
         // if no exposed node, return empty optional
-        if(!exposedNode.isPresent()) {
+        if (!exposedNode.isPresent()) {
             return Optional.empty();
         }
 
@@ -61,18 +62,15 @@ public class KM {
         rightSideNodesToVisit.add(exposedNode.get());
         while (!rightSideNodesToVisit.isEmpty()) {
             // step 1: find non-matching edges from a right side node
-            N visitRightNode = checkNotNull(rightSideNodesToVisit.poll());
             ImmutableSet<N> nextLeftNodes =
-                    graph.adjacentNodes(visitRightNode).stream()
-                        .filter(leftNode -> !m.hasEdgeConnecting(visitRightNode, leftNode)
-                                && !visited.contains(leftNode)
-                                && !leftSideNodesToVisit.contains(leftNode))
-                        .collect(ImmutableSet.toImmutableSet());
-            visited.add(visitRightNode);
-
-            // save the predecessors and add to visit queue
-            nextLeftNodes.forEach(node -> predecessors.put(node, visitRightNode));
-            leftSideNodesToVisit.addAll(nextLeftNodes);
+                    performAugmentingPathBfsStep(
+                            graph,
+                            m,
+                            rightSideNodesToVisit,
+                            leftSideNodesToVisit,
+                            visited,
+                            predecessors,
+                            /* onLeftSide= */ false);
 
             // check if we have found an exposed node
             Optional<N> exposedLeftNode = nextLeftNodes.stream()
@@ -83,32 +81,60 @@ public class KM {
             }
 
             // step 2: find matching edges from a left-side node
-            N visitLeftNode = checkNotNull(leftSideNodesToVisit.poll());
-            ImmutableSet<N> nextRightNodes =
-                    graph.adjacentNodes(visitLeftNode).stream()
-                            .filter(rightNode -> m.hasEdgeConnecting(visitLeftNode, rightNode)
-                                    && !visited.contains(rightNode)
-                                    && !rightSideNodesToVisit.contains(rightNode))
-                            .collect(ImmutableSet.toImmutableSet());
-            visited.add(visitLeftNode);
-
-            // save the predecessors and add to visit queue
-            nextRightNodes.forEach(node -> predecessors.put(node, visitLeftNode));
-            rightSideNodesToVisit.addAll(nextRightNodes);
+            performAugmentingPathBfsStep(
+                    graph,
+                    m,
+                    leftSideNodesToVisit,
+                    rightSideNodesToVisit,
+                    visited,
+                    predecessors,
+                    /* onLeftSide= */ true);
         }
 
         // only get here if explored the whole graph and found no augmenting path
         return Optional.empty();
     }
 
+    private static <N> ImmutableSet<N> performAugmentingPathBfsStep(
+            BipartiteGraph<N, ?> graph,
+            Matching<N> matching,
+            Queue<N> activeSideNodesToVisit,
+            Queue<N> otherSideNodesToVisit,
+            Set<N> visitedNodes,
+            Map<N, N> predecessors,
+            boolean onLeftSide) {
+
+        N visitNode = checkNotNull(activeSideNodesToVisit.poll());
+
+        // if on the left side, look for need to filter based on matched edges
+        // otherwise, looking for non-matched edges
+        Predicate<N> matchChecker = onLeftSide ?
+                node -> matching.hasEdgeConnecting(visitNode, node) :
+                node -> !matching.hasEdgeConnecting(visitNode, node);
+
+        ImmutableSet<N> nextNodes =
+                graph.adjacentNodes(visitNode).stream()
+                        .filter(otherNode -> matchChecker.test(otherNode)
+                                && !visitedNodes.contains(otherNode)
+                                && !otherSideNodesToVisit.contains(otherNode))
+                        .collect(ImmutableSet.toImmutableSet());
+        visitedNodes.add(visitNode);
+
+        // save the predecessors and add to visit queue
+        nextNodes.forEach(node -> predecessors.put(node, visitNode));
+        otherSideNodesToVisit.addAll(nextNodes);
+
+        return nextNodes;
+    }
+
     private static <N> ImmutableList<N>
-        makeAugmentingPathFromPredecessors(N finalNode, Map<N, N> predecessors) {
+    makeAugmentingPathFromPredecessors(N finalNode, Map<N, N> predecessors) {
 
         ImmutableList.Builder<N> builder = ImmutableList.builder();
         N node = finalNode;
         builder.add(finalNode);
 
-        while ( (node = predecessors.get(node)) != null) {
+        while ((node = predecessors.get(node)) != null) {
             builder.add(node);
         }
 
@@ -116,10 +142,18 @@ public class KM {
     }
 
     /**
-     * Updates this matching such that the provided augmenting path is flipped.
+     * Updates the given matching such that the provided augmenting path is flipped.
+     *
+     * Assumes that the path starts from the left side.
      */
-    static void flipAugmentingPath(Matching<Integer> m, ImmutableList<Integer> augmentingPath) {
-        //TODO: implement flipAugmentingPath
+    static <N> void flipAugmentingPath(Matching<N> m, ImmutableList<N> augmentingPath) {
+        checkArgument(augmentingPath.size() % 2 == 0, "Length of augmentingPath is not even.");
+
+        for (int i = 0; i < augmentingPath.size(); i += 2) {
+            N leftNode = augmentingPath.get(i);
+            N rightNode = augmentingPath.get(i + 1);
+            m.forcePutEdge(leftNode, rightNode);
+        }
     }
 
 
