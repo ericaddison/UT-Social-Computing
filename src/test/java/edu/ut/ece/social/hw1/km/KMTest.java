@@ -56,4 +56,21 @@ public class KMTest {
         assertThat(augmentingPath.isPresent()).isFalse();
     }
 
+    @Test
+    public void flipAugmentingPath_shouldFlip() {
+        Matching<Character> m = BipartiteGraphFactory.emptyMatching();
+        m.putEdge('a', 'x');
+        m.putEdge('b', 'y');
+        m.putEdge('c', 'z');
+        ImmutableList<Character> augmentingPath = KM.findAugmentingPath(m, sampleGraph).get();
+
+        KM.flipAugmentingPath(m, augmentingPath);
+
+        assertThat(m.getMatch('a').get()).isEqualTo('w');
+        assertThat(m.getMatch('b').get()).isEqualTo('x');
+        assertThat(m.getMatch('c').get()).isEqualTo('y');
+        assertThat(m.getMatch('d').get()).isEqualTo('z');
+    }
+
+
 }
