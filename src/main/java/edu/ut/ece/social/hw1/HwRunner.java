@@ -1,6 +1,7 @@
 package edu.ut.ece.social.hw1;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import edu.ut.ece.social.graph.BipartiteGraph;
 import edu.ut.ece.social.graph.Matching;
 
@@ -8,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class HwRunner {
@@ -46,7 +48,8 @@ public class HwRunner {
         output += Integer.toString(computeMatchingWeight(graph, maxMatching)) + "\n";
 
         output += maxMatching.getAllMatches().stream()
-                .map(match -> String.format("(%d,%d)", match.getKey(), match.getValue()))
+                .sorted((o1,o2) -> o1.getKey().compareTo(o2.getKey()))
+                .map(match -> String.format("(%d,%d)", match.getKey(), match.getValue()*-1))
                 .collect(Collectors.joining("\n"));
 
         return output;
