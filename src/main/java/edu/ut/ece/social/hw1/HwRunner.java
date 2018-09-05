@@ -43,16 +43,16 @@ public class HwRunner {
 
         Duration elapsedTime = Duration.between(startInstant, endInstant);
 
-        String output = "";
-        output += "Elapsed time: " + elapsedTime.toMillis() + "ms\n";
-        output += Integer.toString(computeMatchingWeight(graph, maxMatching)) + "\n";
+        StringBuilder output = new StringBuilder();
+        output.append("Elapsed time: " + elapsedTime.toMillis() + "ms\n");
+        output.append(Integer.toString(computeMatchingWeight(graph, maxMatching)) + "\n");
 
-        output += maxMatching.getAllMatches().stream()
+        output.append(maxMatching.getAllMatches().stream()
                 .sorted((o1,o2) -> o1.getKey().compareTo(o2.getKey()))
                 .map(match -> String.format("(%d,%d)", match.getKey(), match.getValue()*-1))
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining("\n")));
 
-        return output;
+        return output.toString();
     }
 
     private static int computeMatchingWeight(BipartiteGraph<Integer, Integer> graph, Matching<Integer> matching) {
