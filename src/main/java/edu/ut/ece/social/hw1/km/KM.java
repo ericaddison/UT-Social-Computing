@@ -11,6 +11,7 @@ import edu.ut.ece.social.hw1.HwRunner;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -26,9 +27,10 @@ public class KM {
         while (!m.isPerfectMatchingOn(El)) {
             Optional<ImmutableList<Integer>> augmentingPath = findAugmentingPath(m, El);
             if (augmentingPath.isPresent()) {
-                // flip path
+                flipAugmentingPath(m, augmentingPath.get());
             } else {
-                //TODO: improve l to l'
+                l = improveLabelling(l, El, graph);
+                El = l.getEqualityGraphOn(graph);
             }
         }
 
@@ -41,8 +43,8 @@ public class KM {
      *
      * @return an ordered list of nodes representing the augmenting path.
      */
-    static <N> Optional<ImmutableList<N>>
-    findAugmentingPath(Matching<N> m, BipartiteGraph<N, ?> graph) {
+    static <N> Optional<ImmutableList<N>> findAugmentingPath(
+            Matching<N> m, BipartiteGraph<N, ?> graph) {
         // find an exposed right-side node
         Optional<N> exposedNode = graph.rightSideNodes().stream()
                 .filter(node -> !m.rightSideNodes().contains(node))
@@ -127,8 +129,8 @@ public class KM {
         return nextNodes;
     }
 
-    private static <N> ImmutableList<N>
-    makeAugmentingPathFromPredecessors(N finalNode, Map<N, N> predecessors) {
+    private static <N> ImmutableList<N> makeAugmentingPathFromPredecessors(
+            N finalNode, Map<N, N> predecessors) {
 
         ImmutableList.Builder<N> builder = ImmutableList.builder();
         N node = finalNode;
@@ -143,7 +145,7 @@ public class KM {
 
     /**
      * Updates the given matching such that the provided augmenting path is flipped.
-     *
+     * <p>
      * Assumes that the path starts from the left side.
      */
     static <N> void flipAugmentingPath(Matching<N> m, ImmutableList<N> augmentingPath) {
@@ -156,6 +158,98 @@ public class KM {
         }
     }
 
+    /**
+     * Improve the given labelling to expand the associated equality graph.
+     */
+    static <N> Labelling<N, Integer> improveLabelling(
+            Labelling<N, Integer> labelling, BipartiteGraph<N, Integer> El, BipartiteGraph<N, Integer> graph) {
+
+        Matching<N> M = BipartiteGraphFactory.emptyMatching();
+
+        // Step 1
+        // if M is perfect, stop
+        while (!M.isPerfectMatchingOn(El)) {
+
+            // Step 2
+            // pick exposed vertex u in X
+            // find an exposed left-side node
+            N u = El.leftSideNodes().stream()
+                    .filter(node -> !M.leftSideNodes().contains(node))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalStateException("Unable to find exposed left-side vertex"));
+
+            // let S = {u}, T = empty
+            Set<N> S = new HashSet<>();
+            Set<N> T = new HashSet<>();
+            S.add(u);
+
+
+            Set<N> N_l_S = S.stream().flatMap(s -> El.adjacentNodes(s).stream()).collect(Collectors.toSet());
+            boolean readyToContinue = false;
+
+            while (!readyToContinue) {
+                if (N_l_S.equals(T)) {
+                    // Step 3
+                    // if N_l(S) = T, update labels
+                    labelling = updateLabels(labelling, graph, S, T);
+                    readyToContinue = true;
+                } else {
+                    // Step 4
+                    // if N_l(S) != T, pick y in N_l(S)-T
+                    N_l_S.removeAll(T);
+                    N y = N_l_S.stream().findAny().get();
+
+                    Optional<N> z = M.getMatch(y);
+                    if (!z.isPresent()) {
+                        // if y is free, then u->y is an augmenting path
+                        // augment the path and goto step 2
+                        ImmutableList<N> augmentingPath = ImmutableList.of(u, y);
+                        flipAugmentingPath(M, augmentingPath);
+                        readyToContinue = true;
+                    } else {
+                        // else if y is matched to some z in X
+                        // S <- S U {z}
+                        S.add(z.get());
+                        // T <- T U {y}
+                        T.add(y);
+                        // goto step 3
+                    }
+                }
+            }
+
+        }
+        return labelling;
+
+    }
+
+    private static <N> Labelling<N, Integer> updateLabels(
+            Labelling<N, Integer> labelling, BipartiteGraph<N, Integer> graph, Set<N> S, Set<N> T) {
+        // find alpha based on S and T
+        // alpha = min_{x in S, y in T}(l(x) + l(y) - w(x,y))
+        int alpha = Integer.MAX_VALUE;
+        for (N x : S) {
+            for (N y : T) {
+                int nextVal = labelling.getLabel(x).get() + labelling.getLabel(y).get() - graph.edgeValue(x, y).get();
+                alpha = (nextVal < alpha) ? nextVal : alpha;
+            }
+        }
+
+        // create new labelling with updated labels
+        Labelling<N, Integer> newLabelling = new Labelling<>();
+        for (N node : labelling.getNodes()) {
+            int oldLabel = labelling.getLabel(node).get();
+            if (S.contains(node)) {
+                newLabelling.putLabel(node, oldLabel - alpha);
+            } else if (T.contains(node)) {
+                newLabelling.putLabel(node, oldLabel + alpha);
+            } else {
+                newLabelling.putLabel(node, oldLabel);
+            }
+        }
+
+        // return new labelling
+        return newLabelling;
+    }
 
     public static void main(String args[]) throws FileNotFoundException {
 

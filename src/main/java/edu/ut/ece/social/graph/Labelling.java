@@ -1,5 +1,6 @@
 package edu.ut.ece.social.graph;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.graph.EndpointPair;
 
 import java.util.Comparator;
@@ -14,7 +15,7 @@ public class Labelling<N, V extends Number> {
             BipartiteGraph<N, V> graph) {
         Labelling<N, V> labelling = new Labelling<>();
 
-        for(N leftNode : graph.leftSideNodes()) {
+        for (N leftNode : graph.leftSideNodes()) {
             V maxWeight = graph.adjacentNodes(leftNode).stream()
                     .max((v1, v2) -> compareNodes(leftNode, v1, v2, graph))
                     .flatMap(maxV -> graph.edgeValue(leftNode, maxV))
@@ -23,7 +24,7 @@ public class Labelling<N, V extends Number> {
             labelling.putLabel(leftNode, maxWeight);
         }
 
-        graph.rightSideNodes().forEach(rightNode -> labelling.putLabel(rightNode, (V)Integer.valueOf(0)));
+        graph.rightSideNodes().forEach(rightNode -> labelling.putLabel(rightNode, (V) Integer.valueOf(0)));
 
         return labelling;
     }
@@ -59,11 +60,11 @@ public class Labelling<N, V extends Number> {
 
     private <Z extends Number> boolean checkAllLabels(BipartiteGraph<N, Z> graph, LabelWeightComparator comparator) {
         // if graph contains nodes that this labelling does not, incompatible
-        if(!nodeLabelMap.keySet().containsAll(graph.nodes())) {
+        if (!nodeLabelMap.keySet().containsAll(graph.nodes())) {
             return false;
         }
 
-        for(EndpointPair<N> pair : graph.edges()) {
+        for (EndpointPair<N> pair : graph.edges()) {
             V labelU = nodeLabelMap.get(pair.nodeU());
             V labelV = nodeLabelMap.get(pair.nodeV());
             Z weight = graph.edgeValue(pair.nodeU(), pair.nodeV()).get();
@@ -80,8 +81,14 @@ public class Labelling<N, V extends Number> {
         boolean compareLabelsAndWeight(Number labelU, Number labelV, Number weight);
     }
 
+    /**
+     * Returns a sub-graph of the given graph that contains all the same nodes, but only the tight edges.
+     */
     public <Z extends Number> BipartiteGraph<N, Z> getEqualityGraphOn(BipartiteGraph<N, Z> graph) {
         BipartiteGraph<N, Z> equalityGraph = BipartiteGraphFactory.emptyBipartiteGraph();
+        graph.rightSideNodes().forEach(equalityGraph::addRightSideNode);
+        graph.leftSideNodes().forEach(equalityGraph::addLeftSideNode);
+
         graph.edges().stream()
                 .filter(edge -> isTightEdge(graph, edge))
                 .forEach(edge -> {
@@ -99,6 +106,10 @@ public class Labelling<N, V extends Number> {
         return graph.edgeValue(edge.source(), edge.target())
                 .map(weight -> tightComparator.compareLabelsAndWeight(labelU, labelV, weight))
                 .orElse(false);
+    }
+
+    public ImmutableSet<N> getNodes() {
+        return ImmutableSet.copyOf(nodeLabelMap.keySet());
     }
 
 }

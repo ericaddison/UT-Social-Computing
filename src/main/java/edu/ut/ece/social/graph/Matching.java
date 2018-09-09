@@ -82,8 +82,13 @@ public class Matching<N> {
     /**
      * Returns the match for the given node, if present.
      */
-    public Optional<N> getMatch(N leftSideNode) {
-        return Optional.ofNullable(backingMap.get(leftSideNode));
+    public Optional<N> getMatch(N node) {
+        if (leftSideNodes().contains(node)) {
+            return Optional.of(backingMap.get(node));
+        } else if (rightSideNodes().contains(node)) {
+            return Optional.of(backingMap.inverse().get(node));
+        }
+        return Optional.empty();
     }
 
     /**
