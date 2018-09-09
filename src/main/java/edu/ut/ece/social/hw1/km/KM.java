@@ -145,7 +145,7 @@ public class KM {
 
     /**
      * Updates the given matching such that the provided augmenting path is flipped.
-     * <p>
+     *
      * Assumes that the path starts from the left side.
      */
     static <N> void flipAugmentingPath(Matching<N> m, ImmutableList<N> augmentingPath) {
