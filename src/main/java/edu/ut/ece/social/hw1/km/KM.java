@@ -18,7 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class KM {
 
-    static Matching<Integer> maxMatchingKuhnMunkres(BipartiteGraph<Integer, Integer> graph) {
+    public static Matching<Integer> maxMatchingKuhnMunkres(BipartiteGraph<Integer, Integer> graph) {
 
         Matching<Integer> m = BipartiteGraphFactory.emptyMatching();
         Labelling<Integer, Integer> l = Labelling.createFeasibleLabellingOn(graph);
