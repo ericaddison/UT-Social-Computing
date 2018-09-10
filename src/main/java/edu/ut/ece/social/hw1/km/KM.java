@@ -231,10 +231,10 @@ public class KM {
         notT.removeAll(T);
         for (N x : S) {
             for (N y : notT) {
-                Optional<Integer> lx = labelling.getLabel(x);
-                Optional<Integer> ly = labelling.getLabel(y);
-                Optional<Integer> w = graph.edgeValue(x, y);
-                int nextVal = lx.get() + ly.get() - w.get();
+                int lx = labelling.getLabel(x).get();
+                int ly = labelling.getLabel(y).get();
+                int w = graph.edgeValue(x, y).get();
+                int nextVal = lx + ly - w;
                 alpha = (nextVal < alpha) ? nextVal : alpha;
             }
         }

@@ -10,7 +10,10 @@ import com.google.common.graph.ElementOrder;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
