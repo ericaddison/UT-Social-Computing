@@ -21,40 +21,17 @@ import static com.google.common.truth.Truth.assertThat;
 @RunWith(JUnit4.class)
 public class HwRunnerTest {
 
-    static BipartiteGraph<Integer, Integer> sampleGraph;
-    private CachingPrintStream myPrintStream;
-
-    @Before
-    public void beforeTest() {
-        myPrintStream = new CachingPrintStream();
-    }
-
     @Test
     public void justRunIt_shouldNotThrowAnyExceptions() throws FileNotFoundException {
-        System.setOut(myPrintStream);
+        String testOutput = HwRunner.runMaximumMatchingProblemWithOutput("./src/test/resources/testInput.dat", testMaxMatch);
 
-        HwRunner.runMaximumMatchingProblem("./src/test/resources/testInput.dat", testMaxMatch);
+        String[] testOutputArray = testOutput.split("\n");
 
-        assertThat(myPrintStream.lines.get(0)).matches("Elapsed time:.*ms");
-        assertThat(myPrintStream.lines).contains("3");
-        assertThat(myPrintStream.lines).contains("(1,-1)");
-        assertThat(myPrintStream.lines).contains("(2,-2)");
-        assertThat(myPrintStream.lines).contains("(3,-3)");
-    }
-
-
-    private static class CachingPrintStream extends PrintStream {
-
-        CachingPrintStream() {
-            super(new ByteArrayOutputStream());
-        }
-
-        List<String> lines = new ArrayList<>();
-
-        @Override
-        public void println(String s) {
-            lines.add(s);
-        }
+        assertThat(testOutputArray[0]).matches("Elapsed time:.*ms");
+        assertThat(testOutputArray[1]).contains("3");
+        assertThat(testOutputArray[2]).contains("(1,1)");
+        assertThat(testOutputArray[3]).contains("(2,2)");
+        assertThat(testOutputArray[4]).contains("(3,3)");
     }
 
     private static MaximumMatchingAlgorithm testMaxMatch = graph -> {

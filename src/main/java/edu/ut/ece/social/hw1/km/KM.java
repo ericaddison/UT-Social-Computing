@@ -185,7 +185,6 @@ public class KM {
             S.add(u);
 
             boolean repeatStep3 = true;
-
             while (repeatStep3) {
                 Set<N> N_l_S = S.stream().flatMap(s -> El.adjacentNodes(s).stream()).collect(Collectors.toSet());
                 if (N_l_S.equals(T)) {
@@ -215,7 +214,6 @@ public class KM {
                     }
                 }
             }
-
         }
         return labelling;
 
@@ -259,7 +257,6 @@ public class KM {
     }
 
     public static void main(String args[]) throws FileNotFoundException {
-
         checkArgument(args.length == 1, "Required filename as sole command line argument");
 
         String inputFileName = args[0];

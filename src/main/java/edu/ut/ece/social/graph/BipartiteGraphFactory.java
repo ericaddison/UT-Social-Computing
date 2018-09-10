@@ -5,10 +5,6 @@ package edu.ut.ece.social.graph;
  */
 public class BipartiteGraphFactory {
 
-    public static <N> UnweightedBipartiteGraph<N> emptyUnweightedGraph() {
-        return new UnweightedBipartiteGraph<>();
-    }
-
     public static <N, V> BipartiteGraph<N, V> emptyBipartiteGraph() {
         return new BipartiteGraph<>();
     }

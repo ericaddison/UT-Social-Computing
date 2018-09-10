@@ -82,7 +82,7 @@ public class LabellingTest {
         BipartiteGraph<Integer, Integer> equalityGraph = labelling.getEqualityGraphOn(sampleGraph);
 
         assertThat(equalityGraph.leftSideNodes()).containsExactly(1, 3);
-        assertThat(equalityGraph.rightSideNodes()).containsExactly(4);
+        assertThat(equalityGraph.rightSideNodes()).containsExactly(2, 4);
         assertThat(equalityGraph.hasEdgeConnecting(1, 4)).isTrue();
         assertThat(equalityGraph.hasEdgeConnecting(3, 4)).isTrue();
         assertThat(equalityGraph.hasEdgeConnecting(1, 2)).isFalse();
