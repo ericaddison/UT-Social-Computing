@@ -30,7 +30,7 @@ public class SampleAnswerTest {
 
 
     @Test
-    public void justRunItDGS_shouldNotThrowAnyExceptions() throws FileNotFoundException {
+    public void evaluateSample_shouldNotThrowAnyExceptions() throws FileNotFoundException {
         String testOutput = HwRunner.runMaximumMatchingProblemWithOutput("./src/test/resources/testInput.dat", maximumMatchingAlgorithm);
 
         String[] testOutputArray = testOutput.split("\n");
@@ -43,7 +43,7 @@ public class SampleAnswerTest {
     }
 
     @Test
-    public void justRunItDGSTest1_shouldNotThrowAnyExceptions() throws FileNotFoundException {
+    public void evaluateSampleTest1_shouldNotThrowAnyExceptions() throws FileNotFoundException {
         String testOutput = HwRunner.runMaximumMatchingProblemWithOutput("./src/test/resources/test1.txt", maximumMatchingAlgorithm);
 
         String[] testOutputArray = testOutput.split("\n");
@@ -58,7 +58,7 @@ public class SampleAnswerTest {
     }
 
     @Test
-    public void justRunItDGSTest2_shouldNotThrowAnyExceptions() throws FileNotFoundException {
+    public void evaluateSampleTest2_shouldNotThrowAnyExceptions() throws FileNotFoundException {
         String testOutput = HwRunner.runMaximumMatchingProblemWithOutput("./src/test/resources/test2.txt", maximumMatchingAlgorithm);
 
         String[] testOutputArray = testOutput.split("\n");
@@ -79,7 +79,7 @@ public class SampleAnswerTest {
     }
 
     @Test
-    public void justRunItDGSTest3_shouldNotThrowAnyExceptions() throws FileNotFoundException {
+    public void evaluateSampleTest3_shouldNotThrowAnyExceptions() throws FileNotFoundException {
         String testOutput = HwRunner.runMaximumMatchingProblemWithOutput("./src/test/resources/test3.txt", maximumMatchingAlgorithm);
 
         String[] testOutputArray = testOutput.split("\n");
@@ -90,7 +90,7 @@ public class SampleAnswerTest {
     }
 
     @Test
-    public void justRunItDGSTest4_shouldNotThrowAnyExceptions() throws FileNotFoundException {
+    public void evaluateSampleTest4_shouldNotThrowAnyExceptions() throws FileNotFoundException {
         String testOutput = HwRunner.runMaximumMatchingProblemWithOutput("./src/test/resources/test4.txt", maximumMatchingAlgorithm);
 
         String[] testOutputArray = testOutput.split("\n");
@@ -100,7 +100,7 @@ public class SampleAnswerTest {
     }
 
     @Test
-    public void justRunItDGSTestM3_shouldNotThrowAnyExceptions() throws FileNotFoundException {
+    public void evaluateSampleTestM3_shouldNotThrowAnyExceptions() throws FileNotFoundException {
         String testOutput = HwRunner.runMaximumMatchingProblemWithOutput("./src/test/resources/M3.txt", maximumMatchingAlgorithm);
 
         String[] testOutputArray = testOutput.split("\n");
@@ -109,6 +109,4 @@ public class SampleAnswerTest {
         assertThat(testOutputArray[1]).contains("94");
 
     }
-
-
 }
