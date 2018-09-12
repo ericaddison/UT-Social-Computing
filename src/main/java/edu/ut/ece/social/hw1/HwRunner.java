@@ -1,7 +1,6 @@
 package edu.ut.ece.social.hw1;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableSet;
 import edu.ut.ece.social.graph.BipartiteGraph;
 import edu.ut.ece.social.graph.Matching;
 
@@ -10,27 +9,14 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class HwRunner {
 
     public static void runMaximumMatchingProblem(String filename, MaximumMatchingAlgorithm matchingAlgorithm)
             throws FileNotFoundException {
-        BipartiteGraph<Integer, Integer> graph = InputReader.readGraphFromFile(Paths.get(filename));
-
-        Instant startInstant = Instant.now();
-        Matching<Integer> maxMatching = matchingAlgorithm.findMaximumMatching(graph);
-        Instant endInstant = Instant.now();
-
-        Duration elapsedTime = Duration.between(startInstant, endInstant);
-
-        System.out.println("Elapsed time: " + elapsedTime.toMillis() + "ms");
-        System.out.println(Integer.toString(computeMatchingWeight(graph, maxMatching)));
-
-        maxMatching.getAllMatches().stream()
-                .map(match -> String.format("(%d,%d)", match.getKey(), match.getValue()))
-                .forEach(System.out::println);
-
+        System.out.println(runMaximumMatchingProblemWithOutput(filename, matchingAlgorithm));
     }
 
     public static String runMaximumMatchingProblemWithOutput(String filename, MaximumMatchingAlgorithm matchingAlgorithm)
@@ -48,7 +34,7 @@ public class HwRunner {
         output.append(Integer.toString(computeMatchingWeight(graph, maxMatching)) + "\n");
 
         output.append(maxMatching.getAllMatches().stream()
-                .sorted((o1,o2) -> o1.getKey().compareTo(o2.getKey()))
+                .sorted(Comparator.comparing(Map.Entry::getKey))
                 .map(match -> String.format("(%d,%d)", match.getKey(), match.getValue()*-1))
                 .collect(Collectors.joining("\n")));
 

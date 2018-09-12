@@ -47,24 +47,6 @@ public class Matching<N> {
     }
 
     /**
-     * Finds an augmenting path for this Matching on the given graph. If no augmenting path is found, returns empty
-     * {@link Optional}.
-     *
-     * @return an ordered list of nodes representing the augmenting path.
-     */
-    public Optional<ImmutableList<N>> findAugmentingPathOn(BipartiteGraph<N, ?> graph) {
-        //TODO: implement findAugmentingPath
-        return Optional.empty();
-    }
-
-    /**
-     * Updates this matching such that the provided augmenting path is flipped.
-     */
-    public void flipAugmentingPath(ImmutableList<N> augmentingPath) {
-        //TODO: implement flipAugmentingPath
-    }
-
-    /**
      * Attempt to insert a new edge in the matching, ensuring that neither node is already contained
      * in the other side.
      * If either supplied node already has a connection, operation fails.
@@ -92,15 +74,21 @@ public class Matching<N> {
     /**
      * Checks whether this Matching contains an edge between the given left and right side nodes.
      */
-    public boolean hasEdgeConnecting(N leftSideNode, N rightSideNode) {
-        return backingMap.containsKey(leftSideNode) && backingMap.get(leftSideNode).equals(rightSideNode);
+    public boolean hasEdgeConnecting(N node1, N node2) {
+        return (backingMap.containsKey(node1) && backingMap.get(node1).equals(node2)) ||
+                (backingMap.containsKey(node2) && backingMap.get(node2).equals(node1));
     }
 
     /**
      * Returns the match for the given node, if present.
      */
-    public Optional<N> getMatch(N leftSideNode) {
-        return Optional.ofNullable(backingMap.get(leftSideNode));
+    public Optional<N> getMatch(N node) {
+        if (leftSideNodes().contains(node)) {
+            return Optional.of(backingMap.get(node));
+        } else if (rightSideNodes().contains(node)) {
+            return Optional.of(backingMap.inverse().get(node));
+        }
+        return Optional.empty();
     }
 
     /**
