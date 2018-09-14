@@ -2,6 +2,7 @@ package edu.ut.ece.social.hw1.km;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import edu.ut.ece.social.graph.BipartiteGraph;
 import edu.ut.ece.social.graph.BipartiteGraphFactory;
 import edu.ut.ece.social.graph.Labelling;
@@ -24,7 +25,9 @@ public class KM {
         Labelling<Integer, Integer> l = Labelling.createFeasibleLabellingOn(graph);
         BipartiteGraph<Integer, Integer> El = l.getEqualityGraphOn(graph);
 
+        int i=0;
         while (!m.isPerfectMatchingOn(El)) {
+            i++;
             Optional<ImmutableList<Integer>> augmentingPath = findAugmentingPath(m, El);
             if (augmentingPath.isPresent()) {
                 flipAugmentingPath(m, augmentingPath.get());
@@ -46,53 +49,55 @@ public class KM {
     static <N> Optional<ImmutableList<N>> findAugmentingPath(
             Matching<N> m, BipartiteGraph<N, ?> graph) {
         // find an exposed right-side node
-        Optional<N> exposedNode = graph.rightSideNodes().stream()
+        Set<N> exposedNodes = graph.rightSideNodes().stream()
                 .filter(node -> graph.degree(node) > 0)
                 .filter(node -> !m.rightSideNodes().contains(node))
-                .findFirst();
+                .collect(Collectors.toSet());
 
-        // if no exposed node, return empty optional
-        if (!exposedNode.isPresent()) {
+        // if no exposed nodes, return empty optional
+        if (exposedNodes.isEmpty()) {
             return Optional.empty();
         }
 
-        // perform modified BFS to find augmenting path
-        Set<N> visited = new HashSet<>();
-        Queue<N> rightSideNodesToVisit = new ArrayDeque<>();
-        Queue<N> leftSideNodesToVisit = new ArrayDeque<>();
-        Map<N, N> predecessors = new HashMap<>();
+        for(N node : exposedNodes) {
+            // perform modified BFS to find augmenting path
+            Set<N> visited = new HashSet<>();
+            Queue<N> rightSideNodesToVisit = new ArrayDeque<>();
+            Queue<N> leftSideNodesToVisit = new ArrayDeque<>();
+            Map<N, N> predecessors = new HashMap<>();
 
-        rightSideNodesToVisit.add(exposedNode.get());
-        while (!rightSideNodesToVisit.isEmpty()) {
-            // step 1: find non-matching edges from a right side node
-            ImmutableSet<N> nextLeftNodes =
+            rightSideNodesToVisit.add(node);
+            while (!rightSideNodesToVisit.isEmpty()) {
+                // step 1: find non-matching edges from a right side node
+                ImmutableSet<N> nextLeftNodes =
+                        performAugmentingPathBfsStep(
+                                graph,
+                                m,
+                                rightSideNodesToVisit,
+                                leftSideNodesToVisit,
+                                visited,
+                                predecessors,
+                                /* onLeftSide= */ false);
+
+                // check if we have found an exposed node
+                Optional<N> exposedLeftNode = nextLeftNodes.stream()
+                        .filter(leftNode -> !m.leftSideNodes().contains(leftNode))
+                        .findFirst();
+                if (exposedLeftNode.isPresent()) {
+                    return Optional.of(makeAugmentingPathFromPredecessors(exposedLeftNode.get(), predecessors));
+                }
+
+                // step 2: find matching edges from a left-side node
+                if (!leftSideNodesToVisit.isEmpty()) {
                     performAugmentingPathBfsStep(
                             graph,
                             m,
-                            rightSideNodesToVisit,
                             leftSideNodesToVisit,
+                            rightSideNodesToVisit,
                             visited,
                             predecessors,
-                            /* onLeftSide= */ false);
-
-            // check if we have found an exposed node
-            Optional<N> exposedLeftNode = nextLeftNodes.stream()
-                    .filter(node -> !m.leftSideNodes().contains(node))
-                    .findFirst();
-            if (exposedLeftNode.isPresent()) {
-                return Optional.of(makeAugmentingPathFromPredecessors(exposedLeftNode.get(), predecessors));
-            }
-
-            // step 2: find matching edges from a left-side node
-            if (!leftSideNodesToVisit.isEmpty()) {
-                performAugmentingPathBfsStep(
-                        graph,
-                        m,
-                        leftSideNodesToVisit,
-                        rightSideNodesToVisit,
-                        visited,
-                        predecessors,
-                        /* onLeftSide= */ true);
+                            /* onLeftSide= */ true);
+                }
             }
         }
 
@@ -171,7 +176,7 @@ public class KM {
             BipartiteGraph<N, Integer> graph) {
 
         boolean repeatStep2 = true;
-        while (repeatStep2) {
+        while (repeatStep2 && !M.isPerfectMatchingOn(El)) {
             // Step 2: pick exposed vertex u in X
             // find an exposed left-side node
             N u = El.leftSideNodes().stream()
@@ -194,8 +199,7 @@ public class KM {
                     repeatStep2 = false;
                 } else {
                     // Step 4: if N_l(S) != T, pick y in N_l(S)-T
-                    N_l_S.removeAll(T);
-                    N y = N_l_S.stream().findFirst().get();
+                    N y = Sets.difference(N_l_S, T).stream().findFirst().get();
 
                     Optional<N> z = M.getMatch(y);
                     if (!z.isPresent()) {
@@ -227,15 +231,14 @@ public class KM {
         // find alpha based on S and T
         // alpha = min_{x in S, y in T}(l(x) + l(y) - w(x,y))
         int alpha = Integer.MAX_VALUE;
-        Set<N> notT = new HashSet<>(graph.rightSideNodes());
-        notT.removeAll(T);
+        Set<N> notT = Sets.difference(graph.rightSideNodes(), T);
         for (N x : S) {
             for (N y : notT) {
                 int lx = labelling.getLabel(x).get();
                 int ly = labelling.getLabel(y).get();
                 int w = graph.edgeValue(x, y).get();
                 int nextVal = lx + ly - w;
-                alpha = (nextVal < alpha) ? nextVal : alpha;
+                alpha = Math.min(nextVal, alpha);
             }
         }
 
