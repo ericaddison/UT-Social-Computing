@@ -109,4 +109,15 @@ public class SampleAnswerTest {
         assertThat(testOutputArray[1]).contains("94");
 
     }
+
+    @Test
+    public void evaluateSampleTestM2_shouldNotThrowAnyExceptions() throws FileNotFoundException {
+        String testOutput = HwRunner.runMaximumMatchingProblemWithOutput("./src/test/resources/M2.txt", maximumMatchingAlgorithm);
+
+        String[] testOutputArray = testOutput.split("\n");
+
+        assertThat(testOutputArray[0]).matches("Elapsed time:.*ms");
+        assertThat(testOutputArray[1]).contains("293");
+
+    }
 }
