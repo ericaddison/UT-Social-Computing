@@ -32,9 +32,9 @@ import static edu.ut.ece.social.graph.BipartiteGraphFactory.emptyMatching;
  */
 public class DGS {
 
-    private static Integer findGreatestPayoff(Integer lsn, Map<Integer, Integer> price, BipartiteGraph<Integer,Integer> graph) {
+    private static Integer findGreatestPayoff(Integer lsn, Map<Integer, Double> price, BipartiteGraph<Integer,Integer> graph) {
         Set<Integer> rsnSet = graph.successors(lsn);
-        int maxValue = 0;
+        double maxValue = 0;
         Integer maxRsn = rsnSet.iterator().next();
         for (Integer rsn: rsnSet) {
             if ((graph.edgeValue(lsn,rsn).get() - price.get(rsn)) > maxValue) {
@@ -51,11 +51,11 @@ public class DGS {
                 "Right side nodes size does not equal left size node size");
 
         Queue<Integer> bidderQueue = new PriorityQueue();
-        Map<Integer, Integer> price = new HashMap<>();
+        Map<Integer, Double> price = new HashMap<>();
         Map<Integer, Integer>  owner = new HashMap<>();
 
         for (Integer rsn: graph.rightSideNodes()) {
-            price.put(rsn, 0);
+            price.put(rsn, 0.0);
             owner.put(rsn, null);
         }
         bidderQueue.addAll(graph.leftSideNodes());
@@ -68,13 +68,13 @@ public class DGS {
         while (!bidderQueue.isEmpty()) {
             Integer lsn = bidderQueue.remove();
             Integer rsn = findGreatestPayoff(lsn, price, graph);
-            int effectivePayoff = graph.edgeValue(lsn, rsn).get() - price.get(rsn);
+            double effectivePayoff = graph.edgeValue(lsn, rsn).get() - price.get(rsn);
             if (effectivePayoff >= 0) {
                 if (owner.get(rsn) != null) {
                     bidderQueue.add(owner.get(rsn));
                 }
                 owner.put(rsn, lsn);
-                price.put(rsn, (int) Math.ceil(price.get(rsn) + delta));
+                price.put(rsn, price.get(rsn) + delta);
             }
         }
 
