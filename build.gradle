@@ -21,3 +21,23 @@ test {
         logger.quiet "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
     }
 }
+
+task runKM(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'edu.ut.ece.social.hw1.km.KM'
+
+    if (project.hasProperty("filepath")) {
+        args(filepath)
+    }
+}
+
+task runDGS(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'edu.ut.ece.social.hw1.dgs.DGS'
+
+    if (project.hasProperty("filepath")) {
+        args(filepath)
+    }
+}
