@@ -11,3 +11,13 @@ to test
 ```
 ./gradlew test
 ```
+
+to run DGS algorithm
+```
+gradle runDGS -Pfilepath='path/to/input/file' 
+```
+
+to run KM algorithm
+```
+gradle runKM -Pfilepath='path/to/input/file'
+```
