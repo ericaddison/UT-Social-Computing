@@ -1,0 +1,37 @@
+\section*{2}
+Show that König-Egerváry Theorem implies Hall’s Theorem.
+\probLine
+König-Egerváry Theorem states that in any bipartite graph, the number of edges in a maximum matching equals the number of vertices in a minimum vertex cover.
+
+Then for bipartite graph $G$ with bipartite sets $X$ and $Y$ such that $G:= (X ,Y, E)$ $\exists$ a minimum cover $C$ that maximizes matching.
+Suppose there is no matching that matches $X$. Then by König-Egerváry Theorem $|C| < |X|$ vertices. Consider $C \cap X$ and $C \cap Y$. There is no edge between $X \setminus C$ and $Y \setminus C$, so $N(X \setminus C) \subset C \cap Y$. But then
+\[
+    |N(X \setminus C)| \leq |C \cap Y| = |C| - |C \cap X| < |X| - |C \cap X| = |X \setminus C|,
+\]
+which violates Hall’s condition and therefore means a perfect match does not exist.
+
+Using König-Egerváry Theorem, if a perfect matching exists then
+\[
+    \forall X \text{ is matched to a } Y \implies \forall X, N(X) \geq X.
+\]
+So a constricted set does not exist, thus Hall's Theorem:
+\[
+    \exists \text{ perfect matching } \iff N(X) \geq X
+\]
+is proven.
+
+% Then through case analysis,
+%\[
+%    \forall v \in X
+%\]
+%\begin{enumerate}
+%    \item $v \in C \implies v \text{ has a possible match}$
+%    \item $v \not\in C \implies$
+%    \begin{enumerate}
+%        \item $\exists v' \in C \mid (v, v', E) \subset G$ ($v$ and $v'$ share an edge). This means that $\exists$ at least 1 neighbor i.e. $|N(v)| \geq 1$
+%        \item $\nexists v' \in C \mid (v, v', E) \subset G$ ($v$ has no shared edge with a vertex in $C$ and does not allow a  match for this vertex) i.e. $|N(v)| = 0$.
+%    \end{enumerate}
+%\end{enumerate}
+%A perfect match is only possible if 2(b) does not occur. So a perfect matching (a subset of maximum matching) cannot occur if a 
+%Since only case 2(b, then a perfect matching exists which is Hall's Theorem.
+

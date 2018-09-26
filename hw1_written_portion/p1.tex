@@ -1,0 +1,13 @@
+\section*{1}
+Consider a bipartite graph with a set of boys and girls. Suppose that every girl likes at least $d\geq 1$ boys and every boy likes at most $d$ girls. Show that there exists a perfect matching between boys and girls.
+\probLine
+
+Let $S$ be a subset of girls $S \subseteq G$, with $|S|=n_g$. Let the $N(S)$ be the neighbor set of $S$ with $|N(S)|=n_b$. From the problem statement, we know that the set $S$ must contain at least $dn_g$ outgoing edges (connections to boys), and the set $N(S)$ must contain at most $dn_b$ incoming edges. Additionally, \textit{all} of the outgoing edges from $S$ must also be incoming edges to $N(S)$. Let $n_S$ be the number of edges between $S$ and $N(S)$. From this, we can conclude:
+\begin{align*}
+&dn_g \leq n_S \leq dn_b\\
+\Rightarrow & n_g \leq n_b\\
+\Rightarrow & |S| \leq |N(S)|\\
+\Rightarrow & S \text{ is not a constricted set}
+\end{align*}
+
+Since this applies to any set $S \subseteq G$, there are \textbf{no constricted subsets in $G$}, and so a perfect matching must exist by Hall's marriage theorem.

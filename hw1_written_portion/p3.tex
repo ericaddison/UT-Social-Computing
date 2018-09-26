@@ -1,0 +1,18 @@
+\section*{3}
+An $r \times n$ Sudoku is an $r \times n$ matrix with entries $\lbrace 1, . . . , n\rbrace$ such that each number appears at most once in each row and column. Show that any $r\times n$ Sudoku can be extended to an $(r+1) \times n$ Sudoku whenever $r < n$.
+\probLine
+Let $S$ be an $(r+1)\times n$ matrix where the submatrix $\hat{S} \equiv \lbrace S_{ij} \rbrace_{i=1}^{r}$ is a valid $r \times n$ Sudoku, with $r<n$. Let $B\equiv \lbrace 1,...,n \rbrace$. In order for $S$ to also be a valid Sudoku, each entry in the last row must take a value such that:
+\[
+S_{r+1,j} \in P_j \equiv B - \hat{S}_j
+\]
+Where $P_j$ is the set of potential values for cell $S_{r+1,j}$, with $|P_j| = n-r$, and $\hat{S}_j$ is the set of values in the $jth$ column of $\hat{S}$. 
+
+We can cast this as a matching problem where the matrix entries $G \equiv \lbrace S_{r+1,j} \rbrace_{j=1}^{n}$ form the left-hand side of a bipartite graph (the ``girls"), and the set $B$ forms the right-hand side (the ``boys"). 
+
+Given the size of the potential value set $P_j$, we know that each new cell in $G$ connects to exactly $n-r$ elements in $B$. 
+
+Also, since each value $b \in B$ must be present in each row, and every column in $\hat{S}$ contains $r$ of the values in $B$, every value in $B$ is matched to exactly $n-r$ of the cells in $G$. That is, every value $b$ has $n-r$ potential cells in $G$ that it could fit as a valid entry.
+
+Now, \textbf{by application of the result of problem 1}, since every cell $g \in G$ is connected to at least (in this case, exactly) $n-r \geq 1$ values $b \in B$, and every value $b$ is connected to at most (exactly) $n-r$ cells in $G$, we know that there exists a perfect matching between cells in $G$ and values in $B$. Therefore, the Sudoku $\hat{S}$ can be extended. 
+
+Note that for $r \geq n$, we fail to meet the condition that $n-r \geq 1$, and cannot guarantee a perfect matching.
