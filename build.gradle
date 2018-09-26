@@ -22,6 +22,14 @@ test {
     }
 }
 
+//**********************************************
+// HW 1 run tasks
+//**********************************************
+
+/**
+ * Run the KM maximum matching algorithm
+ *     USAGE: gradle runKM -Pfilepath='path/to/input/file
+ */
 task runKM(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 
@@ -32,6 +40,10 @@ task runKM(type: JavaExec) {
     }
 }
 
+/**
+ * Run the DGS maximum matching algorithm
+ *     USAGE: gradle runDGS -Pfilepath='path/to/input/file
+ */
 task runDGS(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
 
