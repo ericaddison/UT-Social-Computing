@@ -5,6 +5,9 @@ import com.google.common.collect.ImmutableList;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+/**
+ * The manIndex and womanIndex are 1-based indexing!
+ */
 public class MarriageProblem {
 
     private int numberOfPeople;
@@ -34,11 +37,11 @@ public class MarriageProblem {
     }
 
     public ImmutableList<Integer> getManPrefs(int manIndex) {
-        return menPreferences.get(manIndex);
+        return menPreferences.get(toInternalIndex(manIndex));
     }
 
     public ImmutableList<Integer> getWomanPrefs(int womanIndex) {
-        return womanPreferences.get(womanIndex);
+        return womanPreferences.get(toInternalIndex(womanIndex));
     }
 
     /**
@@ -46,8 +49,8 @@ public class MarriageProblem {
      *
      * <p> Ranking is returned as a value between 1 and N, where a lower number indicates a higher preference. </p>
      */
-    public int getManRankingForWoman(int manIndex, int womanIndex) {
-        return 1 + menPreferences.get(manIndex).indexOf(womanIndex);
+    public int getManRankingOfWoman(int manIndex, int womanIndex) {
+        return toExternalIndex(menPreferences.get(toInternalIndex(manIndex)).indexOf(womanIndex));
     }
 
     /**
@@ -56,6 +59,14 @@ public class MarriageProblem {
      * <p> Ranking is returned as a value between 1 and N, where a lower number indicates a higher preference. </p>
      */
     public int getWomanRankingForMan(int womanIndex, int manIndex) {
-        return 1 + womanPreferences.get(womanIndex).indexOf(manIndex);
+        return toExternalIndex(womanPreferences.get(toInternalIndex(womanIndex)).indexOf(manIndex));
+    }
+
+    private static int toInternalIndex(int externalIndex) {
+        return externalIndex-1;
+    }
+
+    private static int toExternalIndex(int internalIndex) {
+        return internalIndex+1;
     }
 }
