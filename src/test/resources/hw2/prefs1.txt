@@ -1,0 +1,9 @@
+4
+1 2 3 4 // man 1 preferences
+2 3 1 4
+4 3 2 1
+1 4 2 3
+3 2 1 4 // woman 1 preferences
+1 2 3 4
+2 3 1 4
+4 2 1 3
