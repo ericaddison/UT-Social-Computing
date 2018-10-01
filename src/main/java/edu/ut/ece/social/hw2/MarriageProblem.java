@@ -8,23 +8,27 @@ import java.util.List;
 
 /**
  * The manIndex and womanIndex are 1-based indexing!
- *
+ * <p>
  * Assumes number of men = number of women.
  */
 public class MarriageProblem {
 
-    private int numberOfPeople;
+    private int numberOfProposers;
     private ImmutableList<ImmutableList<Integer>> menPreferences;
     private ImmutableList<ImmutableList<Integer>> womanPreferences;
-    private List<Integer> mensNextProposalRank;
+    private List<Integer> nextProposalRank;
 
     MarriageProblem(int numberOfMen, List<List<Integer>> menPreferences, List<List<Integer>> womanPreferences) {
-        this.numberOfPeople = numberOfMen;
+        this.numberOfProposers = numberOfMen;
         this.menPreferences = listOfLists(menPreferences);
         this.womanPreferences = listOfLists(womanPreferences);
-        mensNextProposalRank = new ArrayList<>(numberOfMen);
-        for(int i=0; i<numberOfMen; i++) {
-            mensNextProposalRank.add(1);
+        reset();
+    }
+
+    public void reset() {
+        nextProposalRank = new ArrayList<>(numberOfProposers);
+        for (int i = 0; i < numberOfProposers; i++) {
+            nextProposalRank.add(1);
         }
     }
 
@@ -41,7 +45,7 @@ public class MarriageProblem {
     }
 
     public int getNumberOfMen() {
-        return numberOfPeople;
+        return numberOfProposers;
     }
 
     public ImmutableList<Integer> getManPrefs(int manIndex) {
@@ -66,32 +70,34 @@ public class MarriageProblem {
      *
      * <p> Ranking is returned as a value between 1 and N, where a lower number indicates a higher preference. </p>
      */
-    public int getWomanRankingForMan(int womanIndex, int manIndex) {
+    public int getWomanRankingOfMan(int womanIndex, int manIndex) {
         return toExternalIndex(womanPreferences.get(toInternalIndex(womanIndex)).indexOf(manIndex));
     }
 
     private static int toInternalIndex(int externalIndex) {
-        return externalIndex-1;
+        return externalIndex - 1;
     }
 
     private static int toExternalIndex(int internalIndex) {
-        return internalIndex+1;
+        return internalIndex + 1;
     }
 
     /**
-     * Returns the womanIndex of the next woman a man chooses.
+     * Returns the index of the next woman/man a man/woman chooses.
      */
-    public int getNextManProposal(int manIndex) {
-        // get the rank of the next woman in the man's preference list
-        int nextRank = mensNextProposalRank.get(toInternalIndex(manIndex));
-        return getManPrefs(manIndex).get(toInternalIndex(nextRank));
+    public int getNextProposal(int proposerIndex, boolean isProposerAMan) {
+        // get the rank of the next woman/man in the man/woman's preference list
+        int nextRank = nextProposalRank.get(toInternalIndex(proposerIndex));
+        return isProposerAMan
+                ? getManPrefs(proposerIndex).get(toInternalIndex(nextRank))
+                : getWomanPrefs(proposerIndex).get(toInternalIndex(nextRank));
     }
 
     /**
-     * Increments the rank of the man's next choice after being rejected by his current choice.
+     * Increments the rank of the proposer's next choice after being rejected by his/her current choice.
      */
-    public void rejectMan(int manIndex) {
-        int currentManProposalRank = getNextManProposal(manIndex);
-        mensNextProposalRank.set(toInternalIndex(manIndex), currentManProposalRank+1);
+    public void rejectProposer(int proposerIndex, boolean isProposerAMan) {
+        int currentProposalRank = getNextProposal(proposerIndex, isProposerAMan);
+        nextProposalRank.set(toInternalIndex(proposerIndex), currentProposalRank + 1);
     }
 }

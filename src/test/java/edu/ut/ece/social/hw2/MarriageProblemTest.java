@@ -73,14 +73,14 @@ public class MarriageProblemTest {
     public void getwomanRankingOfMen_shouldReturnCorrectValues() {
         MarriageProblem problem = new MarriageProblem(3, MAN_PREFS, WOMAN_PREFS);
 
-        assertThat(problem.getWomanRankingForMan(1, 1)).isEqualTo(3);
-        assertThat(problem.getWomanRankingForMan(1, 2)).isEqualTo(2);
-        assertThat(problem.getWomanRankingForMan(1, 3)).isEqualTo(1);
-        assertThat(problem.getWomanRankingForMan(2, 1)).isEqualTo(2);
-        assertThat(problem.getWomanRankingForMan(2, 2)).isEqualTo(3);
-        assertThat(problem.getWomanRankingForMan(2, 3)).isEqualTo(1);
-        assertThat(problem.getWomanRankingForMan(3, 1)).isEqualTo(2);
-        assertThat(problem.getWomanRankingForMan(3, 2)).isEqualTo(1);
-        assertThat(problem.getWomanRankingForMan(3, 3)).isEqualTo(3);
+        assertThat(problem.getWomanRankingOfMan(1, 1)).isEqualTo(3);
+        assertThat(problem.getWomanRankingOfMan(1, 2)).isEqualTo(2);
+        assertThat(problem.getWomanRankingOfMan(1, 3)).isEqualTo(1);
+        assertThat(problem.getWomanRankingOfMan(2, 1)).isEqualTo(2);
+        assertThat(problem.getWomanRankingOfMan(2, 2)).isEqualTo(3);
+        assertThat(problem.getWomanRankingOfMan(2, 3)).isEqualTo(1);
+        assertThat(problem.getWomanRankingOfMan(3, 1)).isEqualTo(2);
+        assertThat(problem.getWomanRankingOfMan(3, 2)).isEqualTo(1);
+        assertThat(problem.getWomanRankingOfMan(3, 3)).isEqualTo(3);
     }
 }
