@@ -28,7 +28,7 @@ public class InputReaderTest {
 
         MarriageProblem problem = InputReader.readProblemFromReader(reader);
 
-        assertThat(problem.getNumberOfPeople()).isEqualTo(3);
+        assertThat(problem.getNumberOfMen()).isEqualTo(3);
         assertThat(problem.getManPrefs(1)).containsExactly(1, 2, 3);
         assertThat(problem.getManPrefs(2)).containsExactly(3, 2, 1);
         assertThat(problem.getManPrefs(3)).containsExactly(2, 3, 1);

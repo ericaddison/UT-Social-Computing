@@ -28,7 +28,7 @@ public class MarriageProblemTest {
     public void getNumberOfPeople_shouldReturnCorrectValue() {
         MarriageProblem problem = new MarriageProblem(3, MAN_PREFS, WOMAN_PREFS);
 
-        assertThat(problem.getNumberOfPeople()).isEqualTo(3);
+        assertThat(problem.getNumberOfMen()).isEqualTo(3);
     }
 
     @Test
