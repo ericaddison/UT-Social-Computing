@@ -29,6 +29,8 @@ public class GS {
         BiFunction<Integer, Integer, Integer>
                 getRank = manOptimal ? problem::getWomanRankingOfMan : problem::getManRankingOfWoman;
 
+        // For the man-optimal scenario, the proposer is a man, and the target is his next choice woman
+        // for woman-optimal, roles are switched.
         while (!freeList.isEmpty()) {
             int nextProposer = freeList.poll();
             int target = problem.getNextProposal(nextProposer, manOptimal);
@@ -38,7 +40,7 @@ public class GS {
                 int targetsCurrentMatch = matching.inverse().get(target);
                 int targetsRankOfCurrentMatch = getRank.apply(target, targetsCurrentMatch);
                 int targetsRankOfNextProposer = getRank.apply(target, nextProposer);
-                int rejectedPerson = (targetsRankOfNextProposer < targetsRankOfCurrentMatch) ? nextProposer : targetsCurrentMatch;
+                int rejectedPerson = (targetsRankOfNextProposer < targetsRankOfCurrentMatch) ? targetsCurrentMatch : nextProposer;
 
                 // if the new man is more desirable to the woman, make the new match
                 if (nextProposer != rejectedPerson) {
@@ -83,7 +85,7 @@ public class GS {
         System.out.println("\n");
 
         problem.reset();
-        
+
         // woman optimal execution
         GS.stableMarriage(problem, /* manOptimal= */ false);
 
