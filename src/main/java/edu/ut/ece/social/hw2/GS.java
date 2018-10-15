@@ -19,7 +19,7 @@ public class GS {
 
         // create free list of proposers
         Deque<Integer> freeList = new ArrayDeque<>();
-        for (int i = 1; i <= problem.getNumberOfMen(); i++) {
+        for (int i = 0; i < problem.getNumberOfMen(); i++) {
             freeList.add(i);
         }
 
@@ -48,14 +48,14 @@ public class GS {
                 }
 
                 // update the next choice of the rejected man and put him back in the freelist
-                problem.rejectProposer(rejectedPerson, manOptimal);
+                problem.rejectProposer(rejectedPerson);
                 freeList.add(rejectedPerson);
             }
         }
 
         matching.entrySet().stream()
                 .sorted(Comparator.comparing(Map.Entry::getKey))
-                .forEach(entry -> System.out.println(String.format("(%s,%s)", entry.getKey(), entry.getValue())));
+                .forEach(entry -> System.out.println(String.format("(%s,%s)", entry.getKey()+1, entry.getValue()+1)));
 
     }
 
