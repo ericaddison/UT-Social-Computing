@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
  */
 public class GS {
 
-    public static void stableMarriage(MarriageProblem problem, boolean manOptimal) {
+    public static BiMap<Integer, Integer> stableMarriage(MarriageProblem problem, boolean manOptimal) {
 
         // create free list of proposers
         Deque<Integer> freeList = new ArrayDeque<>();
@@ -53,10 +53,7 @@ public class GS {
             }
         }
 
-        matching.entrySet().stream()
-                .sorted(Comparator.comparing(Map.Entry::getKey))
-                .forEach(entry -> System.out.println(String.format("(%s,%s)", entry.getKey()+1, entry.getValue()+1)));
-
+        return matching;
     }
 
     private static boolean isTargetFree(BiMap<Integer, Integer> matching, int targetIndex) {
