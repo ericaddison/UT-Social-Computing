@@ -16,6 +16,11 @@ import java.util.stream.Collectors;
 
 public class HwRunner {
 
+    public static void runStableMarriageProblem(String filePath, boolean manOptimal)
+            throws FileNotFoundException {
+        System.out.println(runStableMarriageProblemWithOutput(filePath, manOptimal));
+    }
+
     public static String runStableMarriageProblemWithOutput(String filePath, boolean manOptimal)
             throws FileNotFoundException {
         MarriageProblem problem = MarriageProblem.fromFile(filePath);

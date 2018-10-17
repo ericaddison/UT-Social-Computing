@@ -10,6 +10,8 @@ import java.util.Deque;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * Implementation of the Gayle-Shapley stable marriage algorithm.
  */
@@ -73,18 +75,11 @@ public class GS {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        String filePath = "./src/test/resources/hw2/prefs1.txt";
-        MarriageProblem problem = MarriageProblem.fromFile(filePath);
+        checkArgument(args.length==2, "Required filename and m or w as command line argument");
 
-        // man optimal execution
-        GS.stableMarriage(problem, /* manOptimal= */ true);
+        String inputFileName = args[0];
+        boolean menOptimal = args[1].equalsIgnoreCase("m") ? true : false;
 
-        System.out.println("\n");
-
-        problem.reset();
-
-        // woman optimal execution
-        GS.stableMarriage(problem, /* manOptimal= */ false);
-
+        HwRunner.runStableMarriageProblem(inputFileName, menOptimal);
     }
 }

@@ -53,3 +53,17 @@ task runDGS(type: JavaExec) {
         args(filepath)
     }
 }
+
+/**
+ * Run the Stable Marriage Problem algorithm
+ *     USAGE: gradle runSMP -Pcmdline_args='path/to/input/file m'
+ */
+task runSMP(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'edu.ut.ece.social.hw2.GS'
+
+    if (project.hasProperty("cmdline_args")) {
+        args(cmdline_args.split(' '))
+    }
+}
