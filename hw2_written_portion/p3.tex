@@ -1,0 +1,21 @@
+\section*{3}
+Suppose that you are given an instance of a stable marriage problem, i.e, the ordered lists of men preferences and the ordered list of women preferences.\\\\ (a) You are given a particular couple $(m, w)$, as an additional input. Give an algorithm to determine if there exists a stable marriage with $m$ assigned to $w$.\\
+(b) What certificate can you give to your friend to show that there is no stable marriage with $(m, w)$ pair?\\
+(c) What certificate can you give to your friend to show that there is a stable marriage with $(m, w)$ pair?
+\probLine
+
+\noindent(a) To find out if there exists a stable marriage with $m$ assigned to $w$ there are various algorithms that could work, but the essence would be to prove the non-existence of a blocking pair. 
+\begin{enumerate}
+    \item To do this I would temporarily remove $m$ and $w$ from the list of possible men and women. This would mean that man $m$ would not get to be in the free list of proposers and woman $w$ would not be in the list of possible women.
+    \item Run the GS algorithm from class on the reduced subset of pairs. Since GS always terminates with with a stable matching then we know we have a stable marriage for all couples except $m$ and $w$. 
+    \item Match $(m,w)$.
+    \item The pair $(m, w')$, where $w'$ is another woman already matched in the reduced-set GS iteration, is a blocking pair \textit{iff} $m$ strictly prefers $w'$ to $w$, and $w$ strictly prefers $m'$, where $m'$ is another man already matched in the reduced-set GS iteration, to $m$.
+    \item If such a blocking pair exists, then the algorithm would say that such a matching is not a stable marriage. If it does not, then the algorithm would say that such a matching is a stable marriage.
+\end{enumerate}
+
+\textit{Notes:} The additional step to find the blocking pair is of $O(2n)$ where $n$ is the number of couples in the problem. This is because it would take an iteration of the entire list of couples for both the man and woman to identify a couple that meets the criteria in (4).\\\\
+(b) The easiest certificate to show that there is no stable matching is to provide a Hasse diagram of all stable matchings and if $(m,w)$ is not a pair in one of the nodes in the Hasse diagram, then there is no stable matching with that pair. However, this requires an exhaustive list of all stable matchings. Another way to show that there is no stable matching with $(m,w)$ pair is to provide a diagram similar to Scribe Notes "Lecture 4: September 29\textsuperscript{th}" figure 4.4. If, given a certain stable matching "route", a $(m,w)$ matching results in a forbidden state as described in the lecture notes, then that is the certificate that no stable matching with this pair can occur. In essence, this diagram and forbidden state is a pictorial representation of the definition of a blocking pair in 3.a.4. But this also means that if a forbidden state exists then this is not a distributed lattice. Given that property, we can come up with the woman-optimal, called $a$ and man-optimal, called $b$ matchings and using those two vectors along with any other matchings, called $c$, that include the pair $(m,w)$ would violate the distributed lattice property of:
+\[
+\forall x \in a,b,c: \min(a_x, \max(b_x, c_x)) = \max(\min(a_x, b_x), \min(a_x, c_x))
+\]
+(c) Similar to part (b), the easiest certificate to show that there is a stable matching is to provide a Hasse diagram of all stable matchings and if $(m,w)$ is a pair in one of the nodes in the Hasse diagram, then there is a stable matching with that pair. However, this requires an exhaustive list of all stable matchings. Another way to show that there is a stable matching with $(m,w)$ pair is to provide a diagram similar to Scribe Notes "Lecture 4: September 29\textsuperscript{th}" figure 4.4. If, given a certain stable matching "route", a $(m,w)$ matching does not result in a forbidden state as described in the lecture notes, then that is the certificate that a stable matching with this pair can occur. 

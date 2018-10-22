@@ -1,0 +1,6 @@
+\section*{2}
+Show that the man-oriented Gale-Shapley algorithm gives the woman-pessimal stable matching, i.e., each woman is paired with her worst valid partner of all stable matchings.
+\probLine
+Suppose M-W matched in S*, but M is not the worst valid partner for W.\\ 
+\textit{Proof by contradiction:} There exists a stable matching S in which W is paired with a man, say M', whom she likes less than M. Let that man be matched with woman W' such that M'-W' denotes that match in S. From the supposition above, M prefers W to W' due to man-optimality of the man-oriented Gale-Shapely algorithm. Thus, M'-W is an unstable in S. \textit{This is a contradiction}. Therefore, W is paired to her worst valid partner.
+\begin{flushright}$\blacksquare$\end{flushright}
